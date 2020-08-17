@@ -1,7 +1,8 @@
+""" Tools to visualize data.
+"""
 from datetime import datetime, timedelta
 
 import matplotlib.pylab as plt
-import numpy as np
 import seaborn as sns
 
 from data_science_tools.utils import DotDict
@@ -9,16 +10,11 @@ from data_science_tools.utils import DotDict
 __all__ = [
     'plot_bars',
     'crayons',
-    'Crayons',
     'pad_axis_limits',
 ]
 
 
-class Crayons(DotDict):
-    pass
-
-
-crayons = Crayons({k.lower().replace(' ', '_'): v for k, v in sns.crayons.items()})
+crayons = DotDict({k.lower().replace(' ', '_'): v for k, v in sns.crayons.items()})
 crayons.update({
     'alert_danger': crayons.brick_red,
     'alert_info': crayons.blue_green,
@@ -26,7 +22,15 @@ crayons.update({
 })
 
 
-def plot_bars(x, heights, width=None, align='center', y_base=0, ax=None, **rectangle_kws):
+def plot_bars(
+        x,
+        heights,
+        width=None,
+        align='center',
+        y_base=0,
+        ax=None,
+        **rectangle_kws
+):  # pylint: disable=invalid-name
     """ Plot rectangular bars.
 
     Args:
@@ -48,7 +52,7 @@ def plot_bars(x, heights, width=None, align='center', y_base=0, ax=None, **recta
     """
     ax = ax or plt.gca()
 
-    if not len(x):
+    if len(x) == 0:
         # don't plot anything because there isn't any
         return []
 
@@ -98,7 +102,7 @@ def plot_bars(x, heights, width=None, align='center', y_base=0, ax=None, **recta
             rect_xmax = xpt
         else:
             raise ValueError(
-                f'unknown value for where "{where}" not one of (center, right, left)'  # noqa
+                f'unknown value for where "{align}" not one of (center, right, left)'  # noqa
             )
 
         kws = {
@@ -139,7 +143,7 @@ def plot_bars(x, heights, width=None, align='center', y_base=0, ax=None, **recta
     return rectangles
 
 
-def pad_axis_limits(padding=0.05, yaxis=True, ax=None):
+def pad_axis_limits(padding=0.05, yaxis=True, ax=None): # pylint: disable=invalid-name
     """ Pad the axis limits by a percentage.
 
     Args:

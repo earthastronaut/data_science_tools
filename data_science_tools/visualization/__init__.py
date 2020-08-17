@@ -1,3 +1,5 @@
+""" Visualizations.
+"""
 import os
 import pylab as plt
 

@@ -1,3 +1,5 @@
+""" Quantize values to nearby points.
+"""
 import unittest
 
 import numpy as np
@@ -10,6 +12,7 @@ __all__ = [
 
 
 def get_quantize_centers(values, centers=None):
+    """ Get the default centers as array given some values """
     if centers is None:
         centers = np.linspace(np.min(values), np.max(values), 10)
     elif isinstance(centers, int):
@@ -18,7 +21,7 @@ def get_quantize_centers(values, centers=None):
 
 
 def quantize_values(values, centers=None):
-    """ On a particular 1d latice, quantize points to nearest 
+    """ On a particular 1d latice, quantize points to nearest
 
     Args:
         values (ndarray[Float]): Array of values to quantize to the centers
@@ -39,7 +42,7 @@ def quantize_hist(values, centers=None):
 
     Args:
         values (ndarray[Float]): Array of values to quantize to the centers
-        centers (ndarray[Float]): Center values to quantize to. 
+        centers (ndarray[Float]): Center values to quantize to.
 
     Returns:
         (pandas.Series): Index is the centers and values are count of values
@@ -54,6 +57,7 @@ class QuantizeTest(unittest.TestCase):
     """ Unittests for quantize functions """
 
     def test_quantize_values(self):
+        """ Test quantize values """
         quantize = np.array([-5, 2, 10])
         values = np.array([-10, -4, 1, 1, 1, 20, 5, 5.9, 7, 7, 16, 17])
         solution = np.array([-5, -5, 2, 2, 2, 10, 2, 2, 10, 10, 10, 10])
