@@ -13,6 +13,8 @@ jobs:
         timeout-minutes: 5
         steps:
             -   uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
             # Initialize Enviornment
             -   name: Set up Python 3.6
                 uses: actions/setup-python@v1
