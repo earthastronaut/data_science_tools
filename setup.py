@@ -28,8 +28,8 @@ setup(
     long_description=LONG_DESCRIPTION,
     python_requires='>=3.6',
     install_requires=[
-        "numpy",
-        "pandas",
+        "pandas >= 1.0.3",
+        "matplotlib >= 3.2.1",
     ],
     classifiers=[
         'Intended Audience :: Data Sceince',

@@ -1,0 +1,7 @@
+# Version set based on current version at time of development.
+
+# Pandas data frames. 
+pandas>=1.0.3
+
+# Visualization libraries.
+matplotlib>=3.2.1
