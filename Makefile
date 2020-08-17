@@ -21,4 +21,4 @@ clean:
 	find . -type d -name "data_science_tools.egg-info" | xargs rm -r $1
 
 test:
-	$(PYTHON_INTERPRETER)  -m unittest discover -s data_science_tools/tests
+	$(PYTHON_INTERPRETER) -m unittest discover -v -s data_science_tools/tests

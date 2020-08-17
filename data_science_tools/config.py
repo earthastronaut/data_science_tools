@@ -15,7 +15,7 @@ def initialize(config=None):
     """ Initialize the configuration. Called in __init__.py
     """
     # do not import globally so config is top of the import hiearchy.
-    import plt  # pylint: disable=import-outside-toplevel, import-error
+    import matplotlib.pylab as plt  # pylint: disable=import-outside-toplevel
     config = config or globals()
 
     plt.style.use(config['DATA_SCIENCE_MPLSTYLE_FILEPATH'])

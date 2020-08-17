@@ -4,6 +4,8 @@ import matplotlib.pylab as plt
 import numpy as np
 import seaborn as sns
 
+from data_science_tools.utils import DotDict
+
 __all__ = [
     'plot_bars',
     'crayons',
@@ -12,14 +14,16 @@ __all__ = [
 ]
 
 
-class Crayons(dict):
+class Crayons(DotDict):
     pass
 
 
-crayons = Crayons(sns.crayons)
-crayons.__dict__.update(
-    {k.lower().replace(' ', '_'): v for k, v in crayons.items()}
-)
+crayons = Crayons({k.lower().replace(' ', '_'): v for k, v in sns.crayons.items()})
+crayons.update({
+    'alert_danger': crayons.brick_red,
+    'alert_info': crayons.blue_green,
+    'alert_warning': crayons.goldenrod,
+})
 
 
 def plot_bars(x, heights, width=None, align='center', y_base=0, ax=None, **rectangle_kws):
