@@ -1,0 +1,60 @@
+lines.linewidth: 5
+lines.solid_capstyle: butt
+
+axes.prop_cycle: cycler('color', ['30a2da', 'fc4f30', 'e5ae38', '6d904f', '8b8b8b'])
+axes.facecolor: ffffff
+axes.labelsize: large
+axes.labelcolor: 333333
+axes.labelweight: light
+axes.axisbelow: true
+axes.grid: true
+axes.edgecolor: BDBBBB
+axes.linewidth: 2.0
+axes.titlesize: x-large
+axes.unicode_minus: False
+
+patch.edgecolor: BDBBBB
+patch.linewidth: 0.5
+
+grid.linestyle: -
+grid.linewidth: 2.0
+grid.color: BDBBBB
+grid.alpha: 0.35
+
+xtick.major.size: 0
+xtick.minor.size: 0
+ytick.major.size: 0
+ytick.minor.size: 0
+
+xtick.color: 333333
+xtick.labelsize: small
+
+ytick.color: 333333
+ytick.labelsize: small
+
+text.color: 333333
+
+legend.loc: upper left
+legend.fontsize: small
+legend.facecolor: ffffff
+legend.edgecolor: ffffff
+legend.fancybox: true
+legend.framealpha: 0.1
+legend.frameon: true
+legend.shadow: false
+
+font.size: 20.0
+font.family: Proxima Nova, sans-serif
+
+savefig.edgecolor: 333333
+savefig.facecolor: 333333
+savefig.transparent: True
+savefig.bbox: tight
+savefig.pad_inches: 0.1
+savefig.dpi: 200
+
+figure.subplot.left: 0.08
+figure.subplot.right: 0.95 
+figure.subplot.bottom: 0.07
+figure.facecolor: ffffff
+figure.figsize: 13.0, 8.0

@@ -1,7 +1,8 @@
 # Version set based on current version at time of development.
 
-# Pandas data frames. 
+# For data manipulation.
 pandas>=1.0.3
 
-# Visualization libraries.
+# For data visualization.
 matplotlib>=3.2.1
+seaborn>=0.10.1
