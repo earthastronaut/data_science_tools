@@ -30,7 +30,7 @@ def plot_bars(
         y_base=0,
         ax=None,
         **rectangle_kws
-):  # pylint: disable=invalid-name
+):  # pylint: disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements
     """ Plot rectangular bars.
 
     Args:
@@ -143,7 +143,7 @@ def plot_bars(
     return rectangles
 
 
-def pad_axis_limits(padding=0.05, yaxis=True, ax=None): # pylint: disable=invalid-name
+def pad_axis_limits(padding=0.05, yaxis=True, ax=None):
     """ Pad the axis limits by a percentage.
 
     Args:

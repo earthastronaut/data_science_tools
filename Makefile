@@ -22,3 +22,6 @@ clean:
 
 test:
 	$(PYTHON_INTERPRETER) -m unittest discover -v -s data_science_tools/tests
+
+lint:
+	pylint --verbose --rcfile=.pylintrc data_science_tools
