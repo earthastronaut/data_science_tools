@@ -1,8 +1,5 @@
 # Version set based on current version at time of development.
+-e .
 
-# For data manipulation.
-pandas>=1.0.3
-
-# For data visualization.
-matplotlib>=3.2.1
-seaborn>=0.10.1
+# Testing
+pylint
