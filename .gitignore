@@ -34,15 +34,6 @@ nosetests.xml
 coverage.xml
 *.cover
 
-# Pycharm
-.idea
-
-# VS Code
-.vscode/
-
-# Spyder
-.spyproject/
-
 # Jupyter NB Checkpoints
 .ipynb_checkpoints/
 
