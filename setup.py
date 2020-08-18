@@ -1,7 +1,7 @@
 """ For installing package. See LICENSE
 """
 import re
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Descriptions
 SHORT_DESCRIPTION = "Various tools useful for data science work"
@@ -28,6 +28,8 @@ setup(
     description=SHORT_DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     python_requires='>=3.6',
+    packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         # For data manipulation.
         'pandas >= 1.0.3',
