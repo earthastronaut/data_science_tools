@@ -10,6 +10,10 @@ __all__ = [
 class DotDict(dict):
     """ dot.notation access to dictionary attributes """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__dict__.update(self)
+
     def __hasattr__(self, name):
         return super().__contains__(name)
 
