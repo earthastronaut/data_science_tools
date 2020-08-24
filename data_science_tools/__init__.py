@@ -17,7 +17,7 @@ from .statistics import *
 from .utils import *
 from .weighted import *
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 __all__ = (
     [
         'config',
