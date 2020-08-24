@@ -13,7 +13,8 @@ msg-template='{line},{column},{category},{symbol}:{msg}'
 [BASIC]
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i,
+good-names=df,
+           i,
            j,
            k,
            ex,
@@ -32,4 +33,6 @@ good-names=i,
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=no-else-return
+disable=no-else-return,
+    no-else-raise,
+    too-many-arguments,

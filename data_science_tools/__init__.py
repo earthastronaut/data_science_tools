@@ -2,12 +2,14 @@
 """
 from . import (
     config,
+    dataframe,
     visualization,
     quantize,
     utils,
     weighted,
 )
 
+from .dataframe import *
 from .visualization import *
 from .quantize import *
 from .utils import *
@@ -18,6 +20,7 @@ __all__ = (
     [
         'config',
     ]
+    + dataframe.__all__
     + visualization.__all__
     + quantize.__all__
     + utils.__all__
