@@ -1,7 +1,6 @@
 """ Tools for interacting with pandas DataFrames
 """
 # pylint: disable=invalid-name
-from IPython.display import display, HTML
 import pandas as pd
 import numpy as np
 
@@ -23,6 +22,9 @@ def display_df(df, style=None, max_rows=100, **kws):
 
     display(HTML(df.to_html(**kws)))
     """
+    # ipython is only used for this function
+    from IPython.display import display, HTML # pylint: disable=import-outside-toplevel
+
     kws['max_rows'] = max_rows
     sty = df.style
     if style is not None:
@@ -162,7 +164,7 @@ def apply_window_func(
         order_ascending=True,
         preceding=None,
         following=None,
-):
+): # pylint: disable=too-many-locals
     """ Order the dataframe, apply the function
     """
     if order_by is None:
@@ -274,7 +276,7 @@ def window_function(
         preceding=0,
         following=1,
         apply_full_window=False,
-):
+):  # pylint: disable=too-many-locals
     """ Apply a window function to the dataframe similar to redshift window functions
 
     ```
