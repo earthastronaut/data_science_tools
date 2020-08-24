@@ -23,7 +23,7 @@ def display_df(df, style=None, max_rows=100, **kws):
     display(HTML(df.to_html(**kws)))
     """
     # ipython is only used for this function
-    from IPython.display import display, HTML # pylint: disable=import-outside-toplevel
+    from IPython.display import display, HTML  # pylint: disable=import-outside-toplevel,import-error
 
     kws['max_rows'] = max_rows
     sty = df.style

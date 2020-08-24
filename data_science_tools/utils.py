@@ -29,7 +29,7 @@ class DotDict(dict):
         try:
             return self.__getitem__(name)
         except KeyError as error:
-            raise AttributeError(*error.args)
+            raise AttributeError from error
 
     def __setitem__(self, name, value):
         self.__dict__[name] = value
