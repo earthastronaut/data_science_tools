@@ -1,6 +1,6 @@
 """ Tests for dataframe module
 """
-# pylint: disable=missing-function-docstring,invalid-name
+# pylint: disable=missing-function-docstring,invalid-name,no-self-use
 
 import unittest
 

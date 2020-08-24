@@ -33,6 +33,7 @@ good-names=df,
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=no-else-return,
+disable=too-many-branches,
+    no-else-return,
     no-else-raise,
     too-many-arguments,

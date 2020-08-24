@@ -88,7 +88,7 @@ class TestBootstrap(unittest.TestCase):
         self.assertListEqual(results, [2 for _ in range(4)])
 
     def test_bootstrap_stats(self):
-        def func(data):
+        def func(_):
             return np.arange(3)
         result = statistics.bootstrap_stats(
             np.ones(10), func,
@@ -112,4 +112,3 @@ class TestBootstrap(unittest.TestCase):
             ]
         )
         pd.testing.assert_frame_equal(result, expected, check_dtype=False)
-

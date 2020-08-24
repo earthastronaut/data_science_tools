@@ -81,17 +81,17 @@ def quantile(data, weights, quantile_limit):
     data = np.asarray(data)
     # TO DO: Allow to specify the axis
     if data.ndim == 0:
-        TypeError("data must have at least one dimension")
+        raise TypeError("data must have at least one dimension")
 
     elif data.ndim == 1:
         return quantile_1d(data, weights, quantile_limit)
 
-    elif data.ndim > 1:
-        shape = data.shape
-        imr = data.reshape((np.prod(shape[:-1]), shape[-1]))
-        result = np.apply_along_axis(
-            quantile_1d, -1, imr, weights, quantile_limit)
-        return result.reshape(shape[:-1])
+    # elif data.ndim > 1:
+    shape = data.shape
+    imr = data.reshape((np.prod(shape[:-1]), shape[-1]))
+    result = np.apply_along_axis(
+        quantile_1d, -1, imr, weights, quantile_limit)
+    return result.reshape(shape[:-1])
 
 
 def median(data, weights):
