@@ -4,6 +4,7 @@ from . import (
     config,
     dataframe,
     visualization,
+    python_cli_tools,
     quantize,
     statistics,
     utils,
@@ -12,18 +13,20 @@ from . import (
 
 from .dataframe import *
 from .visualization import *
+from .python_cli_tools import *
 from .quantize import *
 from .statistics import *
 from .utils import *
 from .weighted import *
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 __all__ = (
     [
         'config',
     ]
     + dataframe.__all__
     + visualization.__all__
+    + python_cli_tools.__all__
     + quantize.__all__
     + statistics.__all__
     + utils.__all__
