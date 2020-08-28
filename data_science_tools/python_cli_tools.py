@@ -116,7 +116,6 @@ def fprint(func, max_line_count=100, exclude_docstring=True, show=True):
 
     """
     import inspect
-    import re
 
     # Optional pagination using ipython if found
     # python2-3 capatible
