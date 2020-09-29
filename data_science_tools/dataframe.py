@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 
 __all__ = [
+    'coalesce',
     'display_df',
     'drop_tmp_columns',
     'outer_join',
@@ -16,6 +17,26 @@ __all__ = [
     'apply_series_method',
     'apply_window_func',
 ]
+
+
+def coalesce(series):
+    """ Coalesce across many series getting the first value for each.
+
+    Parameters
+        series (Union[List, pd.DataFrame]): The series to combine or a dataframe of series.
+
+    Returns
+        pd.Series: Returns pandas series.
+    """
+    if isinstance(series, pd.DataFrame):
+        series_iter = (series.iloc[:, i] for i in range(len(series.columns)))
+    else:
+        series_iter = iter(series)
+    result = next(series_iter).copy()
+    for s in series_iter:
+        result = result.combine_first(s)
+    return result
+
 
 
 def merge_on_index(dataframes, preserve_index_order=True, **kws):

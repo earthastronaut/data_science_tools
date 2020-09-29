@@ -8,8 +8,45 @@ import pandas as pd
 import numpy as np
 
 from data_science_tools import dataframe
+from data_science_tools.dataframe import (
+    coalesce,
+    merge_on_index,
+)
 
-merge_on_index = dataframe.merge_on_index
+
+class TestCoalesce(unittest.TestCase):
+
+    def test_coalesce(self):
+        series = [
+            pd.Series([np.nan, 1, np.nan, np.nan, 1]),
+            pd.Series([np.nan, 2, np.nan, 2, 2]),
+            pd.Series([np.nan, np.nan, 3, 3, 3]),
+        ]
+        expected = pd.Series([np.nan, 1, 3, 2, 1])
+        actual = coalesce(series)
+        np.testing.assert_array_equal(actual.values, expected.values)
+
+    def test_coalesce_df(self):
+        df = pd.DataFrame({
+            0: pd.Series([np.nan, 1, np.nan, np.nan, 1]),
+            1: pd.Series([np.nan, 2, np.nan, 2, 2]),
+            2: pd.Series([np.nan, np.nan, 3, 3, 3]),
+        })
+        expected = pd.Series([np.nan, 1, 3, 2, 1])
+        actual = coalesce([df[c] for c in df])
+        np.testing.assert_array_equal(actual.values, expected.values)
+
+    def test_coalesce_df_multiple_columns(self):
+        df = pd.DataFrame({
+            0: pd.Series([np.nan, 1, np.nan, np.nan, 1]),
+            1: pd.Series([np.nan, 2, np.nan, 2, 2]),
+            2: pd.Series([np.nan, np.nan, 3, 3, 3]),
+        })
+        # using the column names broke when multiples with same name.
+        df.columns = [0, 0, 0]
+        expected = pd.Series([np.nan, 1, 3, 2, 1])
+        actual = coalesce(df)
+        np.testing.assert_array_equal(actual.values, expected.values)
 
 
 class TestWindowFunction(unittest.TestCase):
