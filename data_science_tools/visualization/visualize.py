@@ -1,5 +1,6 @@
 """ Tools to visualize data.
 """
+import functools
 from datetime import datetime, timedelta
 
 import matplotlib.pylab as plt
@@ -8,9 +9,10 @@ import seaborn as sns
 from data_science_tools.utils import DotDict
 
 __all__ = [
-    'plot_bars',
+    'color_palette',
     'crayons',
     'pad_axis_limits',
+    'plot_bars',
 ]
 
 
@@ -20,6 +22,17 @@ crayons.update({
     'alert_info': crayons.blue_green,
     'alert_warning': crayons.goldenrod,
 })
+
+
+@functools.wraps(sns.color_palette)
+def color_palette(n_colors=None, **kws):
+    """ Converts seaborn color_palette to hex """
+    kws['n_colors'] = n_colors
+    kws.setdefault('palette', 'viridis')
+    return map(
+        sns.mpl.colors.rgb2hex,
+        sns.color_palette(**kws)
+    )
 
 
 def plot_bars(
