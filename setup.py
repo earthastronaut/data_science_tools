@@ -36,6 +36,7 @@ setup(
         # For data visualization.
         'matplotlib >= 3.2.1',
         'seaborn>=0.10.1',
+        'plotly>=4.10.0',
     ],
     classifiers=[
         'Intended Audience :: Data Science',
