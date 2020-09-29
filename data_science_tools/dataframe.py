@@ -10,11 +10,62 @@ __all__ = [
     'outer_join',
     'sizeof_df',
     'memory_usage_of_df',
+    'merge_on_index',
     'window_function',
     'apply_row_number',
     'apply_series_method',
     'apply_window_func',
 ]
+
+
+def merge_on_index(dataframes, preserve_index_order=True, **kws):
+    """ Merge dataframes on index.
+
+    Can modify to merge all dataframes on another column but by default it uses index.
+
+    Parameters
+        dataframes (List[pd.DataFrame]): All the dataframes to merge.
+        preserve_index_order (bool): Uses hashing which is unordered by default.
+        When True this will concantenate the index in order of dataframes.
+        **kws: passed to pd.merge(df[i], df[i+1], **kws) with defaults
+        to {'how': 'outer', 'left_index': True', 'right_index': True}
+
+    Returns
+        pd.DataFrame: merged result.
+
+    """
+    kws_merge = {
+        'how': 'outer',
+        'left_index': True,
+        'right_index': True,
+    }
+    kws_merge.update(**kws)
+
+    dataframes_iter = iter(dataframes)
+
+    df = next(dataframes_iter).copy()
+    if isinstance(df, np.ndarray):
+        if df.ndim not in [1, 2]:
+            raise ValueError(f'arrays must be <= 2d not {df.ndim}')
+        df = pd.DataFrame(df)
+        all_index = [df.index]
+        for df_right in dataframes_iter:
+            df_right = pd.DataFrame(df_right)
+            df = pd.merge(df, df_right, **kws_merge)
+            all_index.append(df_right.index)
+    else:
+        all_index = [df.index]
+        for df_right in dataframes_iter:
+            df = pd.merge(df, df_right, **kws_merge)
+            all_index.append(df_right.index)
+
+    if preserve_index_order:
+        index = pd.Index(np.concatenate(all_index))
+        index = index[~index.duplicated()]
+        # materialize the view of frame. Garbage collector should remove the intermediate ones.
+        return df.loc[index].copy()
+    else:
+        return df
 
 
 def display_df(df, style=None, max_rows=100, **kws):

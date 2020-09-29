@@ -5,8 +5,11 @@
 import unittest
 
 import pandas as pd
+import numpy as np
 
 from data_science_tools import dataframe
+
+merge_on_index = dataframe.merge_on_index
 
 
 class TestWindowFunction(unittest.TestCase):
@@ -258,6 +261,58 @@ class TestWindowFunction(unittest.TestCase):
             7.,  # 0:6 -> [2, 4, 6, 8, 10, 12]
         ])
         pd.testing.assert_series_equal(answer, results)
+
+
+class TestMergeOnIndex(unittest.TestCase):
+
+    def test_merge_on_index_base_case(self):
+        # test data
+        x = [0, 1, np.nan, 3, 4, 5, 6, 7, 8, 9]
+        # test arbirary ordering, I ensured they are unique
+        idx = [2, 15, 17, 8, 10, 12, 14, 16, 18, 20]
+        np.testing.assert_equal(len(x), len(idx))
+        dataframes = [
+            pd.DataFrame({'a': x[:4]}, index=idx[:4]),
+            pd.DataFrame({'b': x[2:5]}, index=idx[2:5]),
+            pd.DataFrame({'c1': x[7:10], 'c2': x[0:3]}, index=idx[7:10])
+        ]
+
+        expected = pd.DataFrame(
+            {
+                'a': [0, 1, np.nan, 3, np.nan, np.nan, np.nan, np.nan],
+                # test columns which overlap
+                'b': [np.nan, np.nan, np.nan, 3, 4, np.nan, np.nan, np.nan],
+                # test columns which are all nan
+                'c1': [np.nan, np.nan, np.nan, np.nan, np.nan, 7, 8, 9],
+                # test multiple columns merged
+                'c2': [np.nan, np.nan, np.nan, np.nan, np.nan, 0, 1, np.nan],
+            },
+            index=idx[:5] + idx[7:10],
+        )
+        actual = merge_on_index(dataframes)
+        pd.testing.assert_frame_equal(actual, expected)
+
+    def test_merge_on_index_numpy_arrays(self):
+        # test data
+        x = [0, 1, np.nan, 3, 4, 5, 6, 7, 8, 9]
+        dataframes = [
+            np.array(x[:4]),
+            np.array(x[:5]),
+            np.array([x[:4], x[6:10]]).T,
+        ]
+
+        expected = pd.DataFrame(
+            {
+                '0_x': [0, 1, np.nan, 3, np.nan],
+                '0_y': [0, 1, np.nan, 3, 4],
+                # test columns which are all nan
+                0: [0, 1, np.nan, 3, np.nan],
+                1: [6, 7, 8, 9, np.nan],
+            },
+            index=[0, 1, 2, 3, 4],
+        )
+        actual = merge_on_index(dataframes)
+        pd.testing.assert_frame_equal(actual, expected)
 
 
 if __name__ == '__main__':
