@@ -91,9 +91,8 @@ class FigureSubplot:
         def wrapped(*args, **kws):
             possible_series = kws.get('y', None)
             if isinstance(possible_series, pd.Series):
-                kws.pop('y', None)
-                kws.setdefault('x', possible_series.index)
-                kws.setdefault('y', possible_series.values)
+                kws['x'] = possible_series.index.values
+                kws['y'] = possible_series.values
                 kws.setdefault('name', possible_series.name)
             return method(*args, **kws)
         return wrapped
