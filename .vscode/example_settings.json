@@ -25,5 +25,5 @@
     "python.linting.banditArgs": [
         "--configfile=${workspaceFolder}/.bandit.yml"
     ],
-    "python.pythonPath": "/Users/dylan/.virtualenvs/data_science_tools/bin/python",
+    "python.pythonPath": "${env:VIRTUALENVWRAPPER_HOOK_DIR}/data_science_tools/bin/python",
 }
