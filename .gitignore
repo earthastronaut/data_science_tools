@@ -37,6 +37,9 @@ coverage.xml
 # Jupyter NB Checkpoints
 .ipynb_checkpoints/
 
+# vscode
+.vscode/settings.json
+
 # vim
 *.swp
 *.swo

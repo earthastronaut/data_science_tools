@@ -1,0 +1,27 @@
+// Example of possible settings to use for this project
+// can copy this file to settings.json in your same directory.
+// TODO: convert all of these into the ds_cli
+{
+    "trailingComma": "none",
+    "prettier.trailingComma": "none",
+    // pylint for python linting
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--rcfile=${workspaceFolder}/.pylintrc.ini"
+    ],
+    // flake8 checks python linting + code
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--config=${workspaceFolder}/.flake8.ini"
+    ],
+    // black checks python coding
+    "python.formatting.blackArgs": [
+        "--config=${workspaceFolder}/.black.toml"
+    ],
+    // bandit checks for security
+    "python.linting.banditEnabled": true,
+    "python.linting.banditArgs": [
+        "--configfile=${workspaceFolder}/.bandit.yml"
+    ],
+    "python.formatting.provider": "black",
+}
