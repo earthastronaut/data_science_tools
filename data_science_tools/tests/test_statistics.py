@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from .. import statistics
+from data_science_tools import statistics
 
 
 class TestBootstrap(unittest.TestCase):

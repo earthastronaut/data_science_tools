@@ -8,8 +8,8 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from .. import dataframe
-from ..dataframe import (
+from data_science_tools import dataframe
+from data_science_tools.dataframe import (
     coalesce,
     merge_on_index,
 )

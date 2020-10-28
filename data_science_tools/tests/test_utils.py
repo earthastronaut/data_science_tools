@@ -4,7 +4,7 @@
 # pylint: disable=invalid-name,no-self-use
 import unittest
 
-from .. import utils
+from data_science_tools import utils
 
 
 class TestDotDict(unittest.TestCase):

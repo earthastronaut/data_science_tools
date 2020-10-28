@@ -6,7 +6,7 @@
 
 import unittest
 
-from .. import weighted
+from data_science_tools import weighted
 
 
 class TestWeighted(unittest.TestCase):
