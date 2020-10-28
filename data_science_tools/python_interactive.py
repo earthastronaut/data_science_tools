@@ -32,6 +32,7 @@ import os
 import sys
 import importlib
 import logging
+import warnings
 
 try:
     import builtins
@@ -51,6 +52,13 @@ __all__ = [
 logger = logging.getLogger(__name__)
 PY3 = sys.version[0] == "3"
 
+
+def interactive_only_warning():
+    """ Raise a warning that tools are only suppose to be interactive """
+    msg = "This tool is only meant to be used interactivcely and not in a script"
+    warnings.warn(msg)
+
+
 if PY3:
     simple_reload = importlib.reload
 
@@ -62,6 +70,7 @@ if PY3:
         interactive development of scripts I still find it a helpful function
         to re-execute all the code.
         """
+        interactive_only_warning()
         globals_ = globals_ or globals()
         locals_ = locals_ or locals()
         with open(filepath, "r") as fptr:
@@ -96,6 +105,8 @@ def dirquery(obj, pattern=None, case_sensitive=False, flags=None):
 
     """
     import re
+
+    interactive_only_warning()
 
     if pattern is None:
         return dir(obj)
@@ -137,6 +148,8 @@ def fprint(func, max_line_count=100, exclude_docstring=True, show=True):
 
     """
     import inspect
+
+    interactive_only_warning()
 
     # Optional pagination using ipython if found
     # python2-3 capatible
@@ -266,6 +279,7 @@ def reload(package: ModuleType, recursive: bool = True):
         ModuleType: The reloaded package.
 
     """
+    interactive_only_warning()
     if not recursive:
         return importlib.reload(package)
 

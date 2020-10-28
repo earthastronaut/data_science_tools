@@ -15,7 +15,7 @@
         "--config=${workspaceFolder}/.flake8.ini"
     ],
     // black checks python coding
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
         "--config=${workspaceFolder}/.black.toml"
