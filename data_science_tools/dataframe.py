@@ -100,6 +100,7 @@ def display_df(df, style=None, max_rows=100, **kws):
         display,
         HTML,
     )
+
     kws["max_rows"] = max_rows
     sty = df.style
     if style is not None:
@@ -175,7 +176,7 @@ def memory_usage_of_df(df, deep=False):
 # ####################### WINDOW FUNCTION ####################### #
 
 
-def get_window_range(length, preceding, following, include_incomplete=True): # noqa
+def get_window_range(length, preceding, following, include_incomplete=True):  # noqa
     """Generator for the window range
 
     Paremters:
@@ -488,7 +489,8 @@ def window_function(
             keys = [key]
         else:
             keys = key
-        surrogate_index = surrogate_names[len(keys):]
+        num_keys = len(keys)
+        surrogate_index = surrogate_names[num_keys:]
 
         # TO DO: how to reindex to remove unneeded index but
         # still check that the index is unique. This is inefficient.
@@ -502,7 +504,7 @@ def window_function(
             # select the last column which is the values
             .iloc[:, -1]
         )
-        results_series.index.names = results_index_names[len(keys):]
+        results_series.index.names = results_index_names[num_keys:]
         results_series.name = results.name
 
     return results_series

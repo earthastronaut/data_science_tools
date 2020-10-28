@@ -6,16 +6,11 @@ import numpy as np
 
 __version__ = "0.3"
 
-__all__ = [
-    'quantile_1d',
-    'quantile',
-    'median',
-    'mean'
-]
+__all__ = ["quantile_1d", "quantile", "median", "mean"]
 
 
 def quantile_1d(data, weights, quantile_limit):
-    """ Compute the weighted quantile of a 1D numpy array.
+    """Compute the weighted quantile of a 1D numpy array.
 
     Parameters:
         data : ndarray
@@ -53,16 +48,14 @@ def quantile_1d(data, weights, quantile_limit):
     cuml_weights = np.cumsum(sorted_weights)
 
     # TO DO: Check that the weights do not sum zero
-    prob_normalized = (
-        (cuml_weights - 0.5 * sorted_weights) / np.sum(sorted_weights)
-    )
+    prob_normalized = (cuml_weights - 0.5 * sorted_weights) / np.sum(sorted_weights)
 
     # Get the value of the weighted median
     return np.interp(quantile_limit, prob_normalized, sorted_data[notnan])
 
 
 def quantile(data, weights, quantile_limit):
-    """ Weighted quantile of an array with respect to the last axis.
+    """Weighted quantile of an array with respect to the last axis.
 
     Parameters:
         data : ndarray
@@ -89,13 +82,12 @@ def quantile(data, weights, quantile_limit):
     # elif data.ndim > 1:
     shape = data.shape
     imr = data.reshape((np.prod(shape[:-1]), shape[-1]))
-    result = np.apply_along_axis(
-        quantile_1d, -1, imr, weights, quantile_limit)
+    result = np.apply_along_axis(quantile_1d, -1, imr, weights, quantile_limit)
     return result.reshape(shape[:-1])
 
 
 def median(data, weights):
-    """ Weighted median of an array with respect to the last axis.
+    """Weighted median of an array with respect to the last axis.
 
     Alias for `quantile(data, weights, 0.5)`.
     """
@@ -103,7 +95,7 @@ def median(data, weights):
 
 
 def mean(data, weights, **kws):
-    """ Weighted mean
+    """Weighted mean
 
     Alias for `np.average(data, weights=weights, **kws)`
     """

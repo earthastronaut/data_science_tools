@@ -5,10 +5,10 @@ import pylab as plt
 
 
 __all__ = [
-    'humanize_number',
-    'axis_format_humanize_number',
-    'axis_format_time',
-    'axis_format_percent',
+    "humanize_number",
+    "axis_format_humanize_number",
+    "axis_format_time",
+    "axis_format_percent",
 ]
 
 
@@ -16,16 +16,16 @@ def humanize_number(x):
     """ Convert number to human readable string. """
     abs_x = abs(x)
     if abs_x > 1e6:
-        return f'{x/1e6:.0f}m'
+        return f"{x/1e6:.0f}m"
     elif abs_x > 1e3:
-        return f'{x/1e3:.0f}k'
+        return f"{x/1e3:.0f}k"
     elif abs_x > 10:
-        return f'{x:.0f}'
+        return f"{x:.0f}"
     else:
-        return f'{x:.3f}'
+        return f"{x:.3f}"
 
 
-def axis_format_percent(xaxis=False, fmt='{x:.0%}'):
+def axis_format_percent(xaxis=False, fmt="{x:.0%}"):
     """ Format axis ticks as percent """
     if xaxis:
         axis = plt.gca().xaxis
@@ -55,7 +55,7 @@ def axis_format_time(xaxis=True, month_locator_kws=None):
         axis = plt.gca().yaxis
 
     month_locator_kws_defaults = {
-        'bymonth': 3,
+        "bymonth": 3,
     }
     month_locator_kws_defaults.update(month_locator_kws or {})
     axis.set_major_formatter(

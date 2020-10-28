@@ -33,21 +33,21 @@ test:
 lint-pylint:
 	pylint --verbose --rcfile=${PROJECT_ROOT_PATH}/.pylintrc.ini ${PROJECT_ROOT_PATH}/data_science_tools
 
-# Run flake8
+## Run flake8
 lint-flake8:
 	flake8 --config=${PROJECT_ROOT_PATH}/.flake8.ini ${PROJECT_ROOT_PATH}/data_science_tools
 
-# Run black formatting check
-#lint-black:
-#	black --verbose --config=${PROJECT_ROOT_PATH}/.black.toml --check ${PROJECT_ROOT_PATH}/data_science_tools
-#
+## Run black formatting check
+lint-black:
+	black --verbose --config=${PROJECT_ROOT_PATH}/.black.toml --check ${PROJECT_ROOT_PATH}/data_science_tools
+
 # Run bandit security check
 #lint-bandit:
 #	bandit --verbose --configfile=${PROJECT_ROOT_PATH}/.bandit.yml ${PROJECT_ROOT_PATH}/data_science_tools > /dev/null
 
 ## Lint Python files
-lint: lint-pylint lint-flake8 
-#lint-black lint-bandit
+lint: lint-pylint lint-flake8 lint-black
+	#lint-bandit
 
 ## Check project version vs last git tag version
 version_check:

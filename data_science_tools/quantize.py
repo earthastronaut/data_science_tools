@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd  # optional for quantize_hist
 
 __all__ = [
-    'quantize_values',
-    'quantize_hist',
+    "quantize_values",
+    "quantize_hist",
 ]
 
 
@@ -21,7 +21,7 @@ def get_quantize_centers(values, centers=None):
 
 
 def quantize_values(values, centers=None):
-    """ On a particular 1d latice, quantize points to nearest
+    """On a particular 1d latice, quantize points to nearest
 
     Args:
         values (ndarray[Float]): Array of values to quantize to the centers
@@ -38,7 +38,7 @@ def quantize_values(values, centers=None):
 
 
 def quantize_hist(values, centers=None):
-    """ Quantize values to 1d lattice near center points and aggregate count.
+    """Quantize values to 1d lattice near center points and aggregate count.
 
     Args:
         values (ndarray[Float]): Array of values to quantize to the centers

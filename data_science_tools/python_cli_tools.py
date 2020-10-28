@@ -42,10 +42,10 @@ from .graph import search_graph
 from .types import Dict, ModuleType
 
 __all__ = [
-    'execfile',
-    'reload',
-    'dirquery',
-    'fprint',
+    "execfile",
+    "reload",
+    "dirquery",
+    "fprint",
 ]
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ if PY3:
 
     # bring back execfile and reload for interactive use
     def execfile(filepath, globals_=None, locals_=None):
-        """ Implementation of python-2 execfile
+        """Implementation of python-2 execfile
 
         This function was deprecated in Python 3 in favor of using exec(). In
         interactive development of scripts I still find it a helpful function
@@ -71,17 +71,19 @@ if PY3:
             try:
                 source = fptr.read() + "\n"
                 abs_filepath = os.path.abspath(filepath)
-                code = compile(source, abs_filepath, 'exec')
+                code = compile(source, abs_filepath, "exec")
                 exec(code, globals_, locals_)  # nosec
             except KeyboardInterrupt:
                 return
+
+
 else:
     execfile = builtins.execfile
     simple_reload = builtins.reload
 
 
 def dirquery(obj, pattern=None, case_sensitive=False, flags=None):
-    """ Take dir of an obj and search for matches based on pattern.
+    """Take dir of an obj and search for matches based on pattern.
 
     Parameters
         pattern (string): Regular expression to search with.
@@ -119,7 +121,7 @@ FPRINT_TEMPLATE = """
 
 
 def fprint(func, max_line_count=100, exclude_docstring=True, show=True):
-    """ Prints out the source code (from file) for a function
+    """Prints out the source code (from file) for a function
     inspect.getsourcelines(func)
 
     Parameters
@@ -138,9 +140,7 @@ def fprint(func, max_line_count=100, exclude_docstring=True, show=True):
 
     # Optional pagination using ipython if found
     # python2-3 capatible
-    ModuleNotFound = getattr(
-        builtins, 'ModuleNotFoundError', builtins.ImportError
-    )
+    ModuleNotFound = getattr(builtins, "ModuleNotFoundError", builtins.ImportError)
     try:
         from IPython.core.page import page as pager
     except (ImportError, ModuleNotFound):
@@ -150,29 +150,26 @@ def fprint(func, max_line_count=100, exclude_docstring=True, show=True):
     code_lines, start_line = inspect.getsourcelines(func)
     end_line = start_line + len(code_lines)
 
-    doc_line_count = func.__doc__.count('\n') if func.__doc__ is not None else 0
+    doc_line_count = func.__doc__.count("\n") if func.__doc__ is not None else 0
     if exclude_docstring and doc_line_count > 0:
         msg = '    """ <for docstring run help({name})> """\n'.format(
             name=func.__name__
         )
-        code_lines = (
-            code_lines[:1]
-            + [msg]
-            + code_lines[1 + doc_line_count + 1:]
-        )
+        doc_line_i = 1 + doc_line_count + 1
+        code_lines = code_lines[:1] + [msg] + code_lines[doc_line_i:]
 
     if show:
         template_kws = {
-            'filepath': filepath,
-            'start_line': start_line,
-            'end_line': end_line,
+            "filepath": filepath,
+            "start_line": start_line,
+            "end_line": end_line,
         }
 
         if pager:
-            template_kws['code_text'] = ''.join(code_lines)
+            template_kws["code_text"] = "".join(code_lines)
             pager(FPRINT_TEMPLATE.format(**template_kws))
         else:
-            template_kws['code_text'] = ''.join(code_lines[:max_line_count])
+            template_kws["code_text"] = "".join(code_lines[:max_line_count])
             print(FPRINT_TEMPLATE.format(**template_kws))
         return None
     else:
@@ -180,7 +177,7 @@ def fprint(func, max_line_count=100, exclude_docstring=True, show=True):
 
 
 def generate_package_dependency_graph(package: ModuleType):
-    """ Search a package and find all it's children dependencies.
+    """Search a package and find all it's children dependencies.
 
     Args:
         package (ModuleType): Any module.
@@ -193,8 +190,8 @@ def generate_package_dependency_graph(package: ModuleType):
     package_name = package.__name__
 
     def get_submodules(module_name: str):
-        """ Search a module and find it's children submodules related to the
-        parent package """
+        """Search a module and find it's children submodules related to the
+        parent package"""
         nonlocal dependency_graph, package_name
 
         if module_name not in dependency_graph:
@@ -205,7 +202,7 @@ def generate_package_dependency_graph(package: ModuleType):
                 obj = getattr(module, obj_name)
                 if isinstance(obj, ModuleType):
                     submodule_name = obj.__name__
-                elif hasattr(obj, '__module__'):
+                elif hasattr(obj, "__module__"):
                     submodule_name = obj.__module__
                 else:
                     continue
@@ -223,12 +220,12 @@ def generate_package_dependency_graph(package: ModuleType):
         raise_cycle_error=True,
     )
 
-    logger.info('Dependency graph: %s', dependency_graph)
+    logger.info("Dependency graph: %s", dependency_graph)
     return dependency_graph
 
 
 def reload_from_dependency_graph(dependency_graph: Dict):
-    """ Reload from the graph of dependencies.
+    """Reload from the graph of dependencies.
 
     Args:
         dependency_graph (Dict): Keys are each module and the values are an
@@ -245,7 +242,7 @@ def reload_from_dependency_graph(dependency_graph: Dict):
             submodules_name = reload_graph[module_name]
             # if there are no children then import and remove from graph
             if len(submodules_name) == 0:
-                logger.info('Reload %s', module_name)
+                logger.info("Reload %s", module_name)
                 simple_reload(importlib.import_module(module_name))
                 reloaded_modules.append(module_name)
                 del reload_graph[module_name]
@@ -258,7 +255,7 @@ def reload_from_dependency_graph(dependency_graph: Dict):
 
 
 def reload(package: ModuleType, recursive: bool = True):
-    """ Reload a package
+    """Reload a package
 
     Args:
         package (ModuleType): A module to import it and all children.

@@ -1,6 +1,9 @@
 # Version set based on current version at time of development.
 -e .
 
+# Interactivity
+ipython
+
 # Testing
 pylint
 black

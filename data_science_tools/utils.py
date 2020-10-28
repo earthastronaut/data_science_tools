@@ -1,9 +1,7 @@
 """ General python utilities.
 """
 
-__all__ = [
-    'DotDict'
-]
+__all__ = ["DotDict"]
 
 # %% DotDict
 

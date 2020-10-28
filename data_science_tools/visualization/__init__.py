@@ -13,8 +13,4 @@ from . import (
 from .formatters import *
 from .visualize import *
 
-__all__ = (
-    ['plt', 'plotly']
-    + formatters.__all__
-    + visualize.__all__
-)
+__all__ = ["plt", "plotly"] + formatters.__all__ + visualize.__all__

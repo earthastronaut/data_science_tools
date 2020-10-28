@@ -9,42 +9,35 @@ import seaborn as sns
 from data_science_tools.utils import DotDict
 
 __all__ = [
-    'color_palette',
-    'crayons',
-    'pad_axis_limits',
-    'plot_bars',
+    "color_palette",
+    "crayons",
+    "pad_axis_limits",
+    "plot_bars",
 ]
 
 
-crayons = DotDict({k.lower().replace(' ', '_'): v for k, v in sns.crayons.items()})
-crayons.update({
-    'alert_danger': crayons.brick_red,
-    'alert_info': crayons.blue_green,
-    'alert_warning': crayons.goldenrod,
-})
+crayons = DotDict({k.lower().replace(" ", "_"): v for k, v in sns.crayons.items()})
+crayons.update(
+    {
+        "alert_danger": crayons.brick_red,
+        "alert_info": crayons.blue_green,
+        "alert_warning": crayons.goldenrod,
+    }
+)
 
 
 @functools.wraps(sns.color_palette)
 def color_palette(n_colors=None, **kws):
     """ Converts seaborn color_palette to hex """
-    kws['n_colors'] = n_colors
-    kws.setdefault('palette', 'viridis')
-    return map(
-        sns.mpl.colors.rgb2hex,
-        sns.color_palette(**kws)
-    )
+    kws["n_colors"] = n_colors
+    kws.setdefault("palette", "viridis")
+    return map(sns.mpl.colors.rgb2hex, sns.color_palette(**kws))
 
 
-def plot_bars( # noqa
-        x,
-        heights,
-        width=None,
-        align='center',
-        y_base=0,
-        ax=None,
-        **rectangle_kws
+def plot_bars(  # noqa
+    x, heights, width=None, align="center", y_base=0, ax=None, **rectangle_kws
 ):  # pylint: disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements,line-too-long # noqa
-    """ Plot rectangular bars.
+    """Plot rectangular bars.
 
     Args:
         x (List): X points of the bars. Can handle dates.
@@ -104,13 +97,13 @@ def plot_bars( # noqa
             rect_ymin = y_base
             rect_ymax = rect_ymin + height
 
-        if align == 'center':
+        if align == "center":
             rect_xmin = xpt - half_width
             rect_xmax = xpt + half_width
-        elif align == 'left':
+        elif align == "left":
             rect_xmin = xpt
             rect_xmax = xpt + width
-        elif align == 'right':
+        elif align == "right":
             rect_xmin = xpt - width
             rect_xmax = xpt
         else:
@@ -119,11 +112,11 @@ def plot_bars( # noqa
             )
 
         kws = {
-            'alpha': 0.8,
+            "alpha": 0.8,
         }
         kws.update(rectangle_kws)
         if not is_first:
-            kws.pop('label', None)
+            kws.pop("label", None)
         rect = plt.Rectangle(
             xy=(rect_xmin, rect_ymin),
             height=height,
@@ -137,23 +130,15 @@ def plot_bars( # noqa
             if xmin == 0.0:
                 xmin = rect_xmin
             else:
-                xmin = (
-                    plt
-                    .matplotlib
-                    .dates
-                    .num2date(xmin)
-                    .replace(tzinfo=rect_xmin.tzinfo)
+                xmin = plt.matplotlib.dates.num2date(xmin).replace(
+                    tzinfo=rect_xmin.tzinfo
                 )
         if isinstance(rect_xmax, datetime) and isinstance(xmax, float):
             if xmax == 1.0:
                 xmax = rect_xmax
             else:
-                xmax = (
-                    plt
-                    .matplotlib
-                    .dates
-                    .num2date(xmax)
-                    .replace(tzinfo=rect_xmax.tzinfo)
+                xmax = plt.matplotlib.dates.num2date(xmax).replace(
+                    tzinfo=rect_xmax.tzinfo
                 )
 
         xmin = min(xmin, rect_xmin)
@@ -169,7 +154,7 @@ def plot_bars( # noqa
 
 
 def pad_axis_limits(padding=0.05, yaxis=True, ax=None):
-    """ Pad the axis limits by a percentage.
+    """Pad the axis limits by a percentage.
 
     Args:
         padding (float): Size of padding to add to min and max limit.
@@ -182,11 +167,11 @@ def pad_axis_limits(padding=0.05, yaxis=True, ax=None):
     """
     ax = ax or plt.gca()
     if yaxis:
-        axis_method = 'ylim'
+        axis_method = "ylim"
     else:
-        axis_method = 'xlim'
+        axis_method = "xlim"
 
-    dmin, dmax = getattr(ax, f'get_{axis_method}')()
+    dmin, dmax = getattr(ax, f"get_{axis_method}")()
     if padding < 1.0:
         padding_size = abs((dmax - dmin) * padding)
     else:
@@ -194,5 +179,5 @@ def pad_axis_limits(padding=0.05, yaxis=True, ax=None):
 
     new_min = dmin - padding_size
     new_max = dmax + padding_size
-    getattr(ax, f'set_{axis_method}')(new_min, new_max)
+    getattr(ax, f"set_{axis_method}")(new_min, new_max)
     return new_min, new_max

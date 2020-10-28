@@ -10,12 +10,11 @@ from .types import (
 )
 
 logger = logging.getLogger(__name__)
-logger.setLevel('INFO')
+logger.setLevel("INFO")
 
 
 class SearchGraphCycleError(Exception):
-    """ Raise this error when a cycle is found when searching a graph
-    """
+    """Raise this error when a cycle is found when searching a graph"""
 
 
 def search_graph(
@@ -26,7 +25,7 @@ def search_graph(
     depth_first: bool = True,
     raise_cycle_error: bool = True,
 ):
-    """ Graph search function avoiding cicular patterns.
+    """Graph search function avoiding cicular patterns.
     Parameters
         start: Node (aka key) in the graph (aka dict)
         get_children: Returns children nodes in the graph. If graph is

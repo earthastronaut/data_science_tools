@@ -5,22 +5,22 @@ import numpy as np
 
 
 __all__ = [
-    'bootstrap',
-    'bootstrap_stats',
+    "bootstrap",
+    "bootstrap_stats",
 ]
 
 
 def bootstrap(
-        data,
-        func,
-        func_args=None,
-        func_kws=None,
-        bootstrap_iterations=100,
-        bootstrap_sample_size=0.75,
-        bootstrap_min_sample_size=5,
-        sample_method='choice',
+    data,
+    func,
+    func_args=None,
+    func_kws=None,
+    bootstrap_iterations=100,
+    bootstrap_sample_size=0.75,
+    bootstrap_min_sample_size=5,
+    sample_method="choice",
 ):
-    """ Bootstrap a sample.
+    """Bootstrap a sample.
 
     Randomly samples from x along axis=0, and apply a function for some number
     of iterations
@@ -66,10 +66,10 @@ def bootstrap(
     # if the number requested is larger than the length just return all the
     # indicies
     if number >= length:
-        raise ValueError('sample size is larger then length')
+        raise ValueError("sample size is larger then length")
     elif number < bootstrap_min_sample_size:
-        raise ValueError('sample size is too small')
-    if not callable(sample_method) and sample_method not in ('choice', 'integer'):
+        raise ValueError("sample size is too small")
+    if not callable(sample_method) and sample_method not in ("choice", "integer"):
         raise ValueError("sample_method should be 'choice' or 'integer'")
 
     func_args = func_args or []
@@ -96,7 +96,7 @@ def bootstrap(
 
 
 def bootstrap_stats(data, func, *args, **kwargs):
-    """ Runs bootstrap function and then compiles the results in aggregate.
+    """Runs bootstrap function and then compiles the results in aggregate.
 
     Parameters
         data (array-like or DataFrame): This is used to sample from along axis=0
@@ -108,20 +108,22 @@ def bootstrap_stats(data, func, *args, **kwargs):
     Returns
         DataFrame: aggregate metrics of bootstrap results.
     """
-    kwargs['func'] = func
+    kwargs["func"] = func
     try:
         bootstrap_results = pd.DataFrame(bootstrap(data, *args, **kwargs))
     except ValueError:
         return pd.DataFrame()
 
-    func_args = kwargs.get('func_args', [])
-    func_kws = kwargs.get('func_kws', {})
+    func_args = kwargs.get("func_args", [])
+    func_kws = kwargs.get("func_kws", {})
 
-    return pd.DataFrame({
-        'p10': bootstrap_results.dropna().quantile(0.1),
-        'p50': bootstrap_results.dropna().quantile(0.5),
-        'p90': bootstrap_results.dropna().quantile(0.9),
-        'std': bootstrap_results.std(),
-        'mean': bootstrap_results.mean(),
-        'y': func(data, *func_args, **func_kws),
-    })
+    return pd.DataFrame(
+        {
+            "p10": bootstrap_results.dropna().quantile(0.1),
+            "p50": bootstrap_results.dropna().quantile(0.5),
+            "p90": bootstrap_results.dropna().quantile(0.9),
+            "std": bootstrap_results.std(),
+            "mean": bootstrap_results.mean(),
+            "y": func(data, *func_args, **func_kws),
+        }
+    )

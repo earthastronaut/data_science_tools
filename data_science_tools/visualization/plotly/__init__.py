@@ -11,5 +11,7 @@ from . import _subplots
 from ._subplots import *
 
 __all__ = _subplots.__all__ + [
-    'go', 'plotly', 'px',
+    "go",
+    "plotly",
+    "px",
 ]
