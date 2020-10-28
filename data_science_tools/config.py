@@ -11,6 +11,7 @@ DATA_SCIENCE_MPLSTYLE_FILEPATH = os.environ.get(
     os.path.join(SOURCE_DIR, 'visualization/resources/theme.mplstyle')
 )
 
+
 def initialize(config=None):
     """ Initialize the configuration. Called in __init__.py
     """

@@ -5,6 +5,7 @@
 PYTHON_INTERPRETER = python
 PROJECT_VERSION:=$(shell grep "__version__" data_science_tools/__init__.py | grep -oEi '[0-9\.]+')
 LAST_VERSION_TAG:=$(shell git describe --tags $(shell git rev-list --tags --max-count=1) | grep -oEi '[0-9\.]+')
+PROJECT_ROOT_PATH:=$(shell git rev-parse --show-toplevel)
 
 #################################################################################
 # COMMANDS
@@ -28,9 +29,25 @@ clean:
 test:
 	$(PYTHON_INTERPRETER) -m unittest discover -v -s data_science_tools/tests
 
+## Run pylint
+lint-pylint:
+	pylint --verbose --rcfile=${PROJECT_ROOT_PATH}/.pylintrc.ini ${PROJECT_ROOT_PATH}/data_science_tools
+
+# Run flake8
+lint-flake8:
+	flake8 --config=${PROJECT_ROOT_PATH}/.flake8.ini ${PROJECT_ROOT_PATH}/data_science_tools
+
+# Run black formatting check
+#lint-black:
+#	black --verbose --config=${PROJECT_ROOT_PATH}/.black.toml --check ${PROJECT_ROOT_PATH}/data_science_tools
+#
+# Run bandit security check
+#lint-bandit:
+#	bandit --verbose --configfile=${PROJECT_ROOT_PATH}/.bandit.yml ${PROJECT_ROOT_PATH}/data_science_tools > /dev/null
+
 ## Lint Python files
-lint:
-	pylint --verbose --rcfile=.pylintrc data_science_tools
+lint: lint-pylint lint-flake8 
+#lint-black lint-bandit
 
 ## Check project version vs last git tag version
 version_check:

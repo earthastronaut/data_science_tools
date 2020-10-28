@@ -7,6 +7,7 @@ __all__ = [
 
 # %% DotDict
 
+
 class DotDict(dict):
     """ dot.notation access to dictionary attributes """
 

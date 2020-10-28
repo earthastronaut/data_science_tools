@@ -5,25 +5,26 @@ import pandas as pd
 import numpy as np
 
 __all__ = [
-    'coalesce',
-    'display_df',
-    'drop_tmp_columns',
-    'outer_join',
-    'sizeof_df',
-    'memory_usage_of_df',
-    'merge_on_index',
-    'window_function',
-    'apply_row_number',
-    'apply_series_method',
-    'apply_window_func',
+    "coalesce",
+    "display_df",
+    "drop_tmp_columns",
+    "outer_join",
+    "sizeof_df",
+    "memory_usage_of_df",
+    "merge_on_index",
+    "window_function",
+    "apply_row_number",
+    "apply_series_method",
+    "apply_window_func",
 ]
 
 
 def coalesce(series):
-    """ Coalesce across many series getting the first value for each.
+    """Coalesce across many series getting the first value for each.
 
     Parameters
-        series (Union[List, pd.DataFrame]): The series to combine or a dataframe of series.
+        series (Union[List, pd.DataFrame]): The series to combine or a
+            dataframe of series.
 
     Returns
         pd.Series: Returns pandas series.
@@ -38,9 +39,8 @@ def coalesce(series):
     return result
 
 
-
 def merge_on_index(dataframes, preserve_index_order=True, **kws):
-    """ Merge dataframes on index.
+    """Merge dataframes on index.
 
     Can modify to merge all dataframes on another column but by default it uses index.
 
@@ -56,9 +56,9 @@ def merge_on_index(dataframes, preserve_index_order=True, **kws):
 
     """
     kws_merge = {
-        'how': 'outer',
-        'left_index': True,
-        'right_index': True,
+        "how": "outer",
+        "left_index": True,
+        "right_index": True,
     }
     kws_merge.update(**kws)
 
@@ -67,7 +67,7 @@ def merge_on_index(dataframes, preserve_index_order=True, **kws):
     df = next(dataframes_iter).copy()
     if isinstance(df, np.ndarray):
         if df.ndim not in [1, 2]:
-            raise ValueError(f'arrays must be <= 2d not {df.ndim}')
+            raise ValueError(f"arrays must be <= 2d not {df.ndim}")
         df = pd.DataFrame(df)
         all_index = [df.index]
         for df_right in dataframes_iter:
@@ -83,36 +83,38 @@ def merge_on_index(dataframes, preserve_index_order=True, **kws):
     if preserve_index_order:
         index = pd.Index(np.concatenate(all_index))
         index = index[~index.duplicated()]
-        # materialize the view of frame. Garbage collector should remove the intermediate ones.
+        # materialize the view of frame. Garbage collector should remove the
+        # intermediate ones.
         return df.loc[index].copy()
     else:
         return df
 
 
 def display_df(df, style=None, max_rows=100, **kws):
-    """ Display pandas dataframe
+    """Display pandas dataframe
 
     display(HTML(df.to_html(**kws)))
     """
     # ipython is only used for this function
-    from IPython.display import display, HTML  # pylint: disable=import-outside-toplevel,import-error
-
-    kws['max_rows'] = max_rows
+    from IPython.display import (  # pylint: disable=import-outside-toplevel
+        display,
+        HTML,
+    )
+    kws["max_rows"] = max_rows
     sty = df.style
     if style is not None:
         sty.ctx = style.ctx
     display(HTML(sty.render(**kws)))
 
 
-def drop_tmp_columns(df, tmp_prefix='tmp_'):
-    """ Drop any columns in-place starting with <tmp_prefix>
-    """
+def drop_tmp_columns(df, tmp_prefix="tmp_"):
+    """Drop any columns in-place starting with <tmp_prefix>"""
     columns = [c for c in df.columns if c.startswith(tmp_prefix)]
     df.drop(columns=columns, inplace=True)
 
 
 def indexer(x, bins):
-    """ Get the index for the centers
+    """Get the index for the centers
 
     centers = (bins[1:] + bins[:-1]) * 0.5
     This centers np.digitize to be actual indexes for the centers
@@ -123,13 +125,12 @@ def indexer(x, bins):
 
 
 def in1d(series1, series2):
-    """ Returns a pandas.Series which uses np.in1d
-    """
+    """Returns a pandas.Series which uses np.in1d"""
     return pd.Series(np.in1d(series1, series2), index=series1.index)
 
 
 def outer_join(dataframe1, dataframe2):
-    """ Perform OUTER JOIN dataframe1 and dataframe2
+    """Perform OUTER JOIN dataframe1 and dataframe2
 
     Parameters
         dataframe1 (DataFrame): First data frame.
@@ -140,7 +141,7 @@ def outer_join(dataframe1, dataframe2):
 
     """
     # TO DO: add inner keys for the outer join
-    key = 'join_key_for_cartesian_product_with_obscure_uniqueness'
+    key = "join_key_for_cartesian_product_with_obscure_uniqueness"
     dataframe1[key] = 1
     dataframe2[key] = 1
 
@@ -152,33 +153,30 @@ def outer_join(dataframe1, dataframe2):
     return prod
 
 
-def sizeof_df(num, size_qualifier=''):
+def sizeof_df(num, size_qualifier=""):
     """ returns size in human readable format """
-    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+    for x in ["bytes", "KB", "MB", "GB", "TB"]:
         if num < 1024.0:
             return "%3.1f%s %s" % (num, size_qualifier, x)
         num /= 1024.0
-    return "%3.1f%s %s" % (num, size_qualifier, 'PB')
+    return "%3.1f%s %s" % (num, size_qualifier, "PB")
 
 
 def memory_usage_of_df(df, deep=False):
     """ Returns the memory usage of a dataframe """
-    is_approximate_sizeof = (
-        not deep
-        and (
-            'object' in df.get_dtype_counts()
-            or pd.api.types.is_object_dtype(df.index)
-        )
+    is_approximate_sizeof = not deep and (
+        "object" in df.get_dtype_counts() or pd.api.types.is_object_dtype(df.index)
     )
-    size_qualifier = '+' if is_approximate_sizeof else ''
+    size_qualifier = "+" if is_approximate_sizeof else ""
     mem_usage = df.memory_usage(index=True, deep=deep).sum()
     return sizeof_df(mem_usage, size_qualifier)
 
 
-######################## WINDOW FUNCTION ########################
+# ####################### WINDOW FUNCTION ####################### #
 
-def get_window_range(length, preceding, following, include_incomplete=True):
-    """ Generator for the window range
+
+def get_window_range(length, preceding, following, include_incomplete=True): # noqa
+    """Generator for the window range
 
     Paremters:
         length (int): Maximum length
@@ -222,23 +220,23 @@ def get_window_range(length, preceding, following, include_incomplete=True):
                 f = max(min(f, length), 0)
         if p is not None and f is not None and (p > f):
             raise ValueError(
-                f'Preceding index larger than following, {p} >= {f} and can\'t do df.iloc[{p}:{f}]'
+                f"Preceding index larger than following, {p} >= {f} and can't "
+                f"do df.iloc[{p}:{f}]"
             )
         yield p, i, f
 
 
 def apply_window_func(
-        df,
-        apply,
-        apply_kws=None,
-        apply_full_window=False,
-        order_by=None,
-        order_ascending=True,
-        preceding=None,
-        following=None,
-): # pylint: disable=too-many-locals
-    """ Order the dataframe, apply the function
-    """
+    df,
+    apply,
+    apply_kws=None,
+    apply_full_window=False,
+    order_by=None,
+    order_ascending=True,
+    preceding=None,
+    following=None,
+):  # pylint: disable=too-many-locals
+    """Order the dataframe, apply the function"""
     if order_by is None:
         df_ordered = df
     else:
@@ -263,7 +261,7 @@ def apply_window_func(
 
 
 def apply_series_method(df, column, method, **method_kws):
-    """ This window function selects a column and calls a method on that Series.
+    """This window function selects a column and calls a method on that Series.
 
     Parameters:
         df (DataFrame): pandas dataframe
@@ -280,8 +278,8 @@ def apply_series_method(df, column, method, **method_kws):
     return agg(**method_kws)
 
 
-def apply_row_number(df_ordered, window): # pylint: disable=unused-argument
-    """ ROW_NUMBER Window Function
+def apply_row_number(df_ordered, window):  # pylint: disable=unused-argument
+    """ROW_NUMBER Window Function
 
     Determines the ordinal number of the current row within a group of rows,
     counting from 1, based on the ORDER BY expression in the OVER clause. If
@@ -297,37 +295,37 @@ def apply_row_number(df_ordered, window): # pylint: disable=unused-argument
 
 
 def _resolve_apply_function(apply, apply_kws, apply_full_window):
-    """ Does some fancy overloading for apply because sometimes I want to
+    """Does some fancy overloading for apply because sometimes I want to
     just call window_function(df, 'row_number', partition_by='')
 
     """
     if isinstance(apply, str):
         name = str(apply)
 
-        if name == 'rank':
+        if name == "rank":
             raise NotImplementedError(
-                'Rank not implemented\n'
-                'https://docs.aws.amazon.com/redshift/latest/dg/r_WF_RANK.html'
+                "Rank not implemented\n"
+                "https://docs.aws.amazon.com/redshift/latest/dg/r_WF_RANK.html"
             )
             # return apply_rank, apply_kws, True
 
-        if name == 'dense_rank':
+        if name == "dense_rank":
             raise NotImplementedError(
-                'Dense Rank not implemented\n'
-                'https://docs.aws.amazon.com/redshift/latest/dg/r_WF_DENSE_RANK.html'
+                "Dense Rank not implemented\n"
+                "https://docs.aws.amazon.com/redshift/latest/dg/r_WF_DENSE_RANK.html"
             )
             # return apply_rank, apply_kws, True
 
-        elif name == 'row_number':
+        elif name == "row_number":
             return apply_row_number, apply_kws, True
 
         else:
             kws = {
-                'method': name,
+                "method": name,
             }
             # window(df, 'mean', 'column1')
             if isinstance(apply_kws, str):
-                kws['column'] = apply_kws
+                kws["column"] = apply_kws
             # window(df, 'quantile', {'column': 'column1', 'q': 0.5})
             elif isinstance(apply_kws, dict):
                 kws.update(apply_kws)
@@ -339,17 +337,17 @@ def _resolve_apply_function(apply, apply_kws, apply_full_window):
 
 
 def window_function(
-        df,
-        apply,
-        apply_kws=None,
-        partition_by=None,
-        order_by=None,
-        order_ascending=True,
-        preceding=0,
-        following=1,
-        apply_full_window=False,
+    df,
+    apply,
+    apply_kws=None,
+    partition_by=None,
+    order_by=None,
+    order_ascending=True,
+    preceding=0,
+    following=1,
+    apply_full_window=False,
 ):  # pylint: disable=too-many-locals
-    """ Apply a window function to the dataframe similar to redshift window functions
+    """Apply a window function to the dataframe similar to redshift window functions
 
     ```
     SELECT
@@ -454,9 +452,10 @@ def window_function(
         Particularly the index for any row is, df.iloc[current_row - preceding: current_row + following].
         The following is exclusive based on slice.
 
-    """ # pylint: disable=line-too-long
-    # TO DO: test apply functions which return lists or Series. Can apply act on multiple columns at once.
-    # TO DO: order_nulls_first=True
+    """  # pylint: disable=line-too-long # noqa
+    # TODO: test apply functions which return lists or Series. Can apply act on
+    # multiple columns at once.
+    # TODO: order_nulls_first=True
     apply, apply_kws, apply_full_window = _resolve_apply_function(
         apply, apply_kws, apply_full_window
     )
@@ -475,28 +474,20 @@ def window_function(
         results_series = apply_window_func(df, **kws)
     else:
         # TO DO: better way instead of .apply? which more performant?
-        results = (
-            df
-            .groupby(partition_by)
-            .apply(
-                apply_window_func,
-                **kws
-            )
-        )
+        results = df.groupby(partition_by).apply(apply_window_func, **kws)
 
         # TO DO: Better way which still preserves index
         results_index_names = results.index.names
-        surrogate_names = [f'_surrogate_{i}' for i in range(
-            len(results_index_names))]
+        surrogate_names = [f"_surrogate_{i}" for i in range(len(results_index_names))]
         results.index.names = surrogate_names
 
-        # parition_by is passed through GroupBy to pandas.core.groupby.grouper._get_grouper as key
+        # parition_by is passed through GroupBy to
+        # pandas.core.groupby.grouper._get_grouper as key
         key = partition_by
         if not isinstance(key, list):
             keys = [key]
         else:
             keys = key
-        _surrogate_partition_by = surrogate_names[:len(keys)]
         surrogate_index = surrogate_names[len(keys):]
 
         # TO DO: how to reindex to remove unneeded index but

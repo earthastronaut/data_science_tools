@@ -35,7 +35,7 @@ def color_palette(n_colors=None, **kws):
     )
 
 
-def plot_bars(
+def plot_bars( # noqa
         x,
         heights,
         width=None,
@@ -43,7 +43,7 @@ def plot_bars(
         y_base=0,
         ax=None,
         **rectangle_kws
-):  # pylint: disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+):  # pylint: disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements,line-too-long # noqa
     """ Plot rectangular bars.
 
     Args:
@@ -115,7 +115,7 @@ def plot_bars(
             rect_xmax = xpt
         else:
             raise ValueError(
-                f'unknown value for where "{align}" not one of (center, right, left)'  # noqa
+                f'unknown value for where "{align}" not one of (center, right, left)'
             )
 
         kws = {
@@ -137,12 +137,24 @@ def plot_bars(
             if xmin == 0.0:
                 xmin = rect_xmin
             else:
-                xmin = plt.matplotlib.dates.num2date(xmin).replace(tzinfo=rect_xmin.tzinfo)  # noqa
+                xmin = (
+                    plt
+                    .matplotlib
+                    .dates
+                    .num2date(xmin)
+                    .replace(tzinfo=rect_xmin.tzinfo)
+                )
         if isinstance(rect_xmax, datetime) and isinstance(xmax, float):
             if xmax == 1.0:
                 xmax = rect_xmax
             else:
-                xmax = plt.matplotlib.dates.num2date(xmax).replace(tzinfo=rect_xmax.tzinfo)  # noqa
+                xmax = (
+                    plt
+                    .matplotlib
+                    .dates
+                    .num2date(xmax)
+                    .replace(tzinfo=rect_xmax.tzinfo)
+                )
 
         xmin = min(xmin, rect_xmin)
         xmax = max(xmax, rect_xmax)

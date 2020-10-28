@@ -16,7 +16,7 @@ __all__ = [
 ]
 
 
-def placeholder(*args, **kwargs): # pylint: disable=unused-argument
+def placeholder(*args, **kwargs):  # pylint: disable=unused-argument
     """ Placeholder to appease the linting gods """
 
 
@@ -123,9 +123,9 @@ if __name__ == "__main__":
 
     ax = FigureSubplot(fig, 2, 1)
     ax.add_trace(go.Scatter(x=x, y=y))
-    fig.add_trace(go.Scatter(x=x, y=y+0.5), row=2, col=1)
-    ax.add_scatter(x=x, y=y-0.5)
-    ax.add_scatter(y=pd.Series(y-0.8, index=x, name='series'))
+    fig.add_trace(go.Scatter(x=x, y=y + 0.5), row=2, col=1)
+    ax.add_scatter(x=x, y=y - 0.5)
+    ax.add_scatter(y=pd.Series(y - 0.8, index=x, name='series'))
     ax.update_xaxes(title='Hello X')
     ax.update_yaxes(title='Hello Y')
 

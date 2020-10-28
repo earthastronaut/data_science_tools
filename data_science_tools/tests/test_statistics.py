@@ -75,13 +75,14 @@ class TestBootstrap(unittest.TestCase):
 
     def test_bootstrap_custom_sampler(self):
         data = np.arange(10)
+
         def sample_method(_, number):
             return np.arange(0, number)
 
         results = statistics.bootstrap(
             data, np.mean,
-            bootstrap_sample_size=5, # select first 5 every time
-            bootstrap_iterations=4, # number of iteractions
+            bootstrap_sample_size=5,  # select first 5 every time
+            bootstrap_iterations=4,  # number of iteractions
             sample_method=sample_method,
         )
         # first three are [0, 1, 2, 3, 4] so mean is 2
