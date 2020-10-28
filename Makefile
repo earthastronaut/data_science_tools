@@ -41,13 +41,12 @@ lint-flake8:
 lint-black:
 	black --verbose --config=${PROJECT_ROOT_PATH}/.black.toml --check ${PROJECT_ROOT_PATH}/data_science_tools
 
-# Run bandit security check
-#lint-bandit:
-#	bandit --verbose --configfile=${PROJECT_ROOT_PATH}/.bandit.yml ${PROJECT_ROOT_PATH}/data_science_tools > /dev/null
+## Run bandit security check
+lint-bandit:
+	bandit --verbose --configfile=${PROJECT_ROOT_PATH}/.bandit.yml -r ${PROJECT_ROOT_PATH}/data_science_tools
 
-## Lint Python files
-lint: lint-pylint lint-flake8 lint-black
-	#lint-bandit
+## Run all linters on python files
+lint: lint-pylint lint-flake8 lint-black lint-bandit
 
 ## Check project version vs last git tag version
 version_check:
