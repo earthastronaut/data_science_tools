@@ -8,6 +8,7 @@ from . import (
     python_interactive,
     quantize,
     statistics,
+    jupyter,
     utils,
     weighted,
 )
