@@ -1,11 +1,12 @@
 """ Unit tests for weighted statistics
 """
-# pylint: disable=missing-function-docstring
+# pylint: disable=missing-function-docstring,missing-class-docstring
+# pylint: disable=invalid-name,no-self-use
 # %%
 
 import unittest
 
-from data_science_tools import weighted
+from .. import weighted
 
 
 class TestWeighted(unittest.TestCase):

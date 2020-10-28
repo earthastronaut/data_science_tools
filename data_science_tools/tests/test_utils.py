@@ -1,9 +1,10 @@
 """ Test utilities
 """
-# pylint: disable=invalid-name, missing-function-docstring, missing-class-docstring
+# pylint: disable=missing-function-docstring,missing-class-docstring
+# pylint: disable=invalid-name,no-self-use
 import unittest
 
-from data_science_tools import utils
+from .. import utils
 
 
 class TestDotDict(unittest.TestCase):

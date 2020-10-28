@@ -1,13 +1,14 @@
 """ Tests for dataframe module
 """
-# pylint: disable=missing-function-docstring,invalid-name
+# pylint: disable=missing-function-docstring,missing-class-docstring
+# pylint: disable=invalid-name,no-self-use
 
 import unittest
 
 import numpy as np
 import pandas as pd
 
-from data_science_tools import statistics
+from .. import statistics
 
 
 class TestBootstrap(unittest.TestCase):

@@ -1,14 +1,15 @@
 """ Tests for dataframe module
 """
-# pylint: disable=missing-function-docstring,invalid-name,no-self-use
+# pylint: disable=missing-function-docstring,missing-class-docstring
+# pylint: disable=invalid-name,no-self-use
 
 import unittest
 
 import pandas as pd
 import numpy as np
 
-from data_science_tools import dataframe
-from data_science_tools.dataframe import (
+from .. import dataframe
+from ..dataframe import (
     coalesce,
     merge_on_index,
 )
