@@ -39,7 +39,7 @@ test:
 		percentage = int(open('.coverage.report').read().split('\n')[-2].split()[-1].strip('%')); \
 		brightgreen, green, yellow, orange, red = '#4c1', '#97CA00', '#dfb317', '#fe7d37', '#e05d44'; \
 		color = brightgreen if (percentage > 99) else green if (percentage > 75) else yellow if (percentage > 50) else orange if (percentage > 25) else red; \
-		svg_file = 'docs/coverage.svg'; \
+		svg_file = 'docs/img/coverage.svg'; \
 		ns = {'s': 'http://www.w3.org/2000/svg'}; \
 		tree = ElementTree(file=svg_file); \
 		tree.findall('s:g', ns)[0].findall('s:path', ns)[1].attrib['fill'] = color; \
