@@ -6,7 +6,7 @@ PYTHON_INTERPRETER = python
 PROJECT_VERSION:=$(shell grep "__version__" data_science_tools/__init__.py | grep -oEi '[0-9\.]+')
 LAST_VERSION_TAG:=$(shell git describe --tags $(shell git rev-list --tags --max-count=1) | grep -oEi '[0-9\.]+')
 PROJECT_ROOT_PATH:=$(shell git rev-parse --show-toplevel)
-MIN_COVERAGE_PERCENT:=63
+MIN_COVERAGE_PERCENT:=78
 
 #################################################################################
 # COMMANDS
@@ -28,7 +28,7 @@ clean:
 
 ## Run unit tests with coverage
 test:
-	coverage run --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini -m unittest discover -v -s data_science_tools/tests
+	coverage run --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini -m unittest discover -v -s data_science_tools
 	coverage html --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini
 	coverage report --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini > .coverage.report
 	cat .coverage.report
