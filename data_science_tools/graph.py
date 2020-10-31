@@ -53,7 +53,7 @@ def search_graph(
     while len(stack) > 0:
         node, path, path_lookup = pop_node()
 
-        # logger.debug(f'Path: {path}')
+        # logger.debug(f"Path: {path}")
         if callback is not None:
             if callback(path):
                 return path
