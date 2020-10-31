@@ -12,3 +12,17 @@ Include this package by adding to requirements.txt
 git+https://github.com/earthastronaut/data_science_tools@master#egg=data_science_tools
 ```
 
+# Contributing
+
+Set up for development create a virtualenvironment and run `make requirements`
+to install requirements and this package. 
+
+The CI/CD runs `make lint` and `make test` to check the code and run unittests.
+Please run these prior to making pull requests.
+
+The version is stored in `data_science_tools/__init__.py` and should be updated 
+for significant changes. There's a `make version_tag` which will `git tag` with
+the version.
+
+Optionally, if you use vscode you can copy the `.vscode/example_settings.json` to
+`.vscode/settings.json` to use the magic linting tools. 
