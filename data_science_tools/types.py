@@ -1,21 +1,33 @@
 """ For all common types. DO NOT IMPORT OTHER PACKAGE MODULES INTO THIS ONE
 """
-from typing import Dict, List, Hashable, Iterable, Callable, Union, Any
+# pylint: disable=missing-function-docstring
+
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Deque,
+    List,
+    Sequence,
+    Hashable,
+    Iterable,
+    Union,
+    TypeVar,
+)
 from types import ModuleType
 
 __all__ = [
+    "Any",
     "Callable",
-    "CallableHashableArg",
-    "CallableListHashableArg",
     "Dict",
+    "Deque",
     "List",
+    "Sequence",
     "Hashable",
     "Iterable",
     "ModuleType",
     "Union",
-    "Any",
+    "Node",
 ]
 
-
-CallableHashableArg = Callable[[Hashable], Any]
-CallableListHashableArg = Callable[[List[Hashable]], Any]
+Node = TypeVar("Node", Hashable, str, int, float)

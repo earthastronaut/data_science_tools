@@ -37,10 +37,10 @@ import warnings
 try:
     import builtins
 except ImportError:
-    import __builtin__ as builtins
+    import __builtin__ as builtins  # type: ignore
 
 from .graph import search_graph
-from .types import Dict, ModuleType
+from .types import Dict, Sequence, ModuleType
 
 __all__ = [
     "execfile",
@@ -202,7 +202,7 @@ def generate_package_dependency_graph(package: ModuleType):
     dependency_graph = {}
     package_name = package.__name__
 
-    def get_submodules(module_name: str):
+    def get_submodules(module_name: str) -> Sequence[str]:
         """Search a module and find it's children submodules related to the
         parent package"""
         nonlocal dependency_graph, package_name

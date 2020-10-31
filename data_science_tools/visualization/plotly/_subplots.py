@@ -4,12 +4,13 @@ Made this semi-private because there is plotly.subplots
 """
 import functools
 
-from typing import Dict, Union
+from typing import Dict, Union, Any, Callable
 
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from .types import TFigure
 
 __all__ = [
     "FigureSubplot",
@@ -36,20 +37,33 @@ class FigureSubplot:
     update_xaxes = placeholder
     update_yaxes = placeholder
 
-    def __init__(
+    # @overload
+    # def __init__(
+    #     self, figure: dict, row: int = 1, col: int = 1, secondary_y: bool = False
+    # ):
+    #     pass
+
+    # @overload
+    # def __init__(  # noqa
+    #     self, figure: TFigure, row: int = 1, col: int = 1, secondary_y: bool = False
+    # ):
+    #     pass
+
+    def __init__(  # noqa
         self,
-        figure: Union[Dict, go.Figure] = None,
+        figure: Union[dict, TFigure] = None,
         row: int = 1,
         col: int = 1,
         secondary_y: bool = False,
     ):
-        if figure is None:
-            figure = make_subplots(rows=1, cols=1)
-        elif isinstance(figure, dict):
-            figure = make_subplots(**figure)
-
-        self.figure = figure
-        self.subplot = figure.get_subplot(row, col)
+        self.figure: TFigure
+        if isinstance(figure, dict):
+            self.figure = make_subplots(**figure)
+        elif figure is None:
+            self.figure = make_subplots(rows=1, cols=1)
+        else:
+            self.figure = figure
+        self.subplot = self.figure.get_subplot(row, col)
 
         self.row = row
         self.col = col
@@ -58,7 +72,7 @@ class FigureSubplot:
         row_col = ["row", "col"]
         row_col_secondary_y = row_col + ["secondary_y"]
 
-        wrap_figure_methods = {
+        wrap_figure_methods: Dict[str, Dict[str, Any]] = {
             "add_trace": {
                 "wrap_kws": row_col_secondary_y,
             },
@@ -84,7 +98,7 @@ class FigureSubplot:
             setattr(self, method_name, func)
 
     @staticmethod
-    def _wrap_y_series(method: callable):
+    def _wrap_y_series(method: Callable):
         """Wraps the function so if y is a pandas Series then it will
         convert y series to x=y.index and y=y.values and name=y.name
         """

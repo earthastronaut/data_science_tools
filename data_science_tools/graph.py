@@ -4,9 +4,12 @@ from collections import deque
 import logging
 
 from .types import (
-    CallableHashableArg,
-    CallableListHashableArg,
-    Hashable,
+    Any,
+    Callable,
+    Deque,
+    Sequence,
+    Node,
+    Union,
 )
 
 logger = logging.getLogger(__name__)
@@ -18,10 +21,10 @@ class SearchGraphCycleError(Exception):
 
 
 def search_graph(
-    start: Hashable,
-    get_children: CallableHashableArg,
-    callback: CallableListHashableArg = None,
-    callback_no_children: CallableListHashableArg = None,
+    start: Node,
+    get_children: Callable[[Node], Sequence[Node]],
+    callback: Callable[[Sequence[Node]], Union[bool, None]] = None,
+    callback_no_children: Callable[[Sequence[Node]], Any] = None,
     depth_first: bool = True,
     raise_cycle_error: bool = True,
 ):
@@ -46,7 +49,7 @@ def search_graph(
         None or List[Hashable]: Returns None or the current path when
             `callable(path) == True`.
     """
-    stack = deque()
+    stack: Deque = deque()
     stack.append((start, [start], {start}))
     pop_node = stack.pop if depth_first else stack.popleft
 

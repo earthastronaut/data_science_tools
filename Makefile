@@ -50,7 +50,6 @@ test:
 		print('\n\nTests passed with coverage {}% >= {}%'.format(percentage, min_percentage)); \
 		"
 
-
 ## Run pylint
 lint-pylint:
 	pylint --verbose --rcfile=${PROJECT_ROOT_PATH}/.pylintrc.ini ${PROJECT_ROOT_PATH}/data_science_tools
@@ -70,9 +69,12 @@ lint-bandit:
 ## Run all linters on python files
 lint: lint-pylint lint-flake8 lint-black lint-bandit
 
+## Run mypy type check
+type-check:
+	mypy --config-file=${PROJECT_ROOT_PATH}/.mypy.ini .
 
-mypy:
-	echo "TODO: Add type checking via mypy"
+## Run ci/cd checks
+ci-cd: test lint type-check version_check
 
 ## Check project version vs last git tag version
 version_check:
