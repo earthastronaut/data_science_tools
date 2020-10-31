@@ -1,4 +1,6 @@
 ![](https://github.com/earthastronaut/data_science_tools/workflows/Project%20Tests/badge.svg)
+![](docs/coverage.svg)
+
 
 # Data Science Tools
 

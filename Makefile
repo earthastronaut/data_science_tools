@@ -6,6 +6,7 @@ PYTHON_INTERPRETER = python
 PROJECT_VERSION:=$(shell grep "__version__" data_science_tools/__init__.py | grep -oEi '[0-9\.]+')
 LAST_VERSION_TAG:=$(shell git describe --tags $(shell git rev-list --tags --max-count=1) | grep -oEi '[0-9\.]+')
 PROJECT_ROOT_PATH:=$(shell git rev-parse --show-toplevel)
+MIN_COVERAGE_PERCENT:=58
 
 #################################################################################
 # COMMANDS
@@ -25,9 +26,30 @@ clean:
 	find . -type d -name "__pycache__" -delete
 	find . -type d -name "data_science_tools.egg-info" | xargs rm -r $1
 
-## Run unit tests
+## Run unit tests with coverage
 test:
-	$(PYTHON_INTERPRETER) -m unittest discover -v -s data_science_tools/tests
+	coverage run --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini -m unittest discover -v -s data_science_tools/tests
+	coverage html --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini
+	coverage report --rcfile=${PROJECT_ROOT_PATH}/.coveragerc.ini > .coverage.report
+	cat .coverage.report
+	
+	# check coverage and update badge
+	echo ${MIN_COVERAGE_PERCENT} | python -c "min_percentage = int(input('')); \
+		from xml.etree.ElementTree import ElementTree; \
+		percentage = int(open('.coverage.report').read().split('\n')[-2].split()[-1].strip('%')); \
+		brightgreen, green, yellow, orange, red = '#4c1', '#97CA00', '#dfb317', '#fe7d37', '#e05d44'; \
+		color = brightgreen if (percentage > 99) else green if (percentage > 75) else yellow if (percentage > 50) else orange if (percentage > 25) else red; \
+		svg_file = 'docs/coverage.svg'; \
+		ns = {'s': 'http://www.w3.org/2000/svg'}; \
+		tree = ElementTree(file=svg_file); \
+		tree.findall('s:g', ns)[0].findall('s:path', ns)[1].attrib['fill'] = color; \
+		tree.findall('s:g', ns)[1].findall('s:text', ns)[2].text = str(percentage) + '%'; \
+		tree.findall('s:g', ns)[1].findall('s:text', ns)[3].text = str(percentage) + '%'; \
+		tree.write(svg_file); \
+		assert percentage >= min_percentage, 'Total {}% less than minimum {}%, please add test coverage'.format(percentage, min_percentage); \
+		print('\n\nTests passed with coverage {}% >= {}%'.format(percentage, min_percentage)); \
+		"
+
 
 ## Run pylint
 lint-pylint:
@@ -47,6 +69,10 @@ lint-bandit:
 
 ## Run all linters on python files
 lint: lint-pylint lint-flake8 lint-black lint-bandit
+
+
+mypy:
+	echo "TODO: Add type checking via mypy"
 
 ## Check project version vs last git tag version
 version_check:

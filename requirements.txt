@@ -5,6 +5,7 @@
 ipython
 
 # Testing
+coverage
 pylint
 black
 flake8
