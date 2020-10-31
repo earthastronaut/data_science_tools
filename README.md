@@ -1,8 +1,8 @@
-![](https://github.com/earthastronaut/data_science_tools/workflows/Project%20Tests/badge.svg)
-![](docs/coverage.svg)
-
-
 # Data Science Tools
+
+![](https://github.com/earthastronaut/data_science_tools/workflows/Project%20Tests/badge.svg)
+![](docs/img/coverage.svg)
+![](docs/img/mypy_checked.svg)
 
 This is a toolbox of various functions that are useful for data science work. 
 
