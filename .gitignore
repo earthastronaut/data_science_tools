@@ -33,7 +33,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-*.mypy_cache
+*.mypy*
+docs/reports/*
 
 # Jupyter NB Checkpoints
 .ipynb_checkpoints/

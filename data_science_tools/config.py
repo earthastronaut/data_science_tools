@@ -10,7 +10,7 @@ DATA_SCIENCE_MPLSTYLE_FILEPATH = os.environ.get(
 )
 
 
-def initialize(config=None):
+def initialize(config: dict = None):
     """Initialize the configuration. Called in __init__.py"""
     # do not import globally so config is top of the import hiearchy.
     import matplotlib.pylab as plt  # pylint: disable=import-outside-toplevel

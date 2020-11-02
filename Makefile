@@ -39,7 +39,7 @@ test:
 		percentage = int(open('.coverage.report').read().split('\n')[-2].split()[-1].strip('%')); \
 		brightgreen, green, yellow, orange, red = '#4c1', '#97CA00', '#dfb317', '#fe7d37', '#e05d44'; \
 		color = brightgreen if (percentage > 99) else green if (percentage > 75) else yellow if (percentage > 50) else orange if (percentage > 25) else red; \
-		svg_file = 'docs/img/coverage.svg'; \
+		svg_file = 'docs/badges/coverage.svg'; \
 		ns = {'s': 'http://www.w3.org/2000/svg'}; \
 		tree = ElementTree(file=svg_file); \
 		tree.findall('s:g', ns)[0].findall('s:path', ns)[1].attrib['fill'] = color; \
@@ -72,6 +72,27 @@ lint: lint-pylint lint-flake8 lint-black lint-bandit
 ## Run mypy type check
 type-check:
 	mypy --config-file=${PROJECT_ROOT_PATH}/.mypy.ini .
+
+	python -c "print('Generate mypy badge') ;\
+		import lxml.html ;\
+		report_path = 'docs/reports/mypy-report/index.html' ;\
+		badge_path = 'docs/badges/mypy.svg' ;\
+		'# Read report path' ;\
+		page = lxml.html.parse(report_path) ;\
+		text = page.xpath('//body//table[1]//tfoot//tr[1]//th[2]')[0].text ;\
+		percentage, _, info = text.partition('%') ;\
+		percentage = float(percentage) ;\
+		text = format(percentage, '.0f') + _ + info ;\
+		'# Read+update badge' ;\
+		brightgreen, green, yellow, orange, red = '#4c1', '#97CA00', '#dfb317', '#fe7d37', '#e05d44' ;\
+		color = brightgreen if (percentage > 99) else green if (percentage > 75) else yellow if (percentage > 50) else orange if (percentage > 25) else red ;\
+		tree = lxml.etree.parse(badge_path) ;\
+		ns = {'s': 'http://www.w3.org/2000/svg'} ;\
+		tree.xpath('//s:g[2]//s:text', namespaces=ns)[2].attrib['fill'] = color ;\
+		tree.xpath('//s:g[2]//s:text', namespaces=ns)[2].text = text ;\
+		tree.xpath('//s:g[2]//s:text', namespaces=ns)[3].text = text ;\
+		tree.write(badge_path) ;\
+		print(text)"
 
 ## Run ci/cd checks
 ci-cd: test lint type-check version_check
@@ -113,18 +134,18 @@ help:
 	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
 	@echo
 	@sed -n -e "/^## / { \
-		h; \
-		s/.*//; \
+		h ;\
+		s/.*// ;\
 		:doc" \
-		-e "H; \
-		n; \
-		s/^## //; \
+		-e "H ;\
+		n ;\
+		s/^## // ;\
 		t doc" \
-		-e "s/:.*//; \
-		G; \
-		s/\\n## /---/; \
-		s/\\n/ /g; \
-		p; \
+		-e "s/:.*// ;\
+		G ;\
+		s/\\n## /---/ ;\
+		s/\\n/ /g ;\
+		p ;\
 	}" ${MAKEFILE_LIST} \
 	| LC_ALL='C' sort --ignore-case \
 	| awk -F '---' \
@@ -133,17 +154,17 @@ help:
 		-v col_on="$$(tput setaf 6)" \
 		-v col_off="$$(tput sgr0)" \
 	'{ \
-		printf "%s%*s%s ", col_on, -indent, $$1, col_off; \
-		n = split($$2, words, " "); \
-		line_length = ncol - indent; \
+		printf "%s%*s%s ", col_on, -indent, $$1, col_off ;\
+		n = split($$2, words, " ") ;\
+		line_length = ncol - indent ;\
 		for (i = 1; i <= n; i++) { \
-			line_length -= length(words[i]) + 1; \
+			line_length -= length(words[i]) + 1 ;\
 			if (line_length <= 0) { \
-				line_length = ncol - indent - length(words[i]) - 1; \
-				printf "\n%*s ", -indent, " "; \
+				line_length = ncol - indent - length(words[i]) - 1 ;\
+				printf "\n%*s ", -indent, " " ;\
 			} \
-			printf "%s ", words[i]; \
+			printf "%s ", words[i] ;\
 		} \
-		printf "\n"; \
+		printf "\n" ;\
 	}' \
 	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
