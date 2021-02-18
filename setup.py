@@ -32,7 +32,7 @@ setup(
     include_package_data=True,
     install_requires=[
         # For data manipulation.
-        'pandas >= 1.0.3',
+        'pandas >= 0.23.4',
         # For data visualization.
         'matplotlib >= 3.2.1',
         'seaborn>=0.10.1',
