@@ -10,6 +10,7 @@ pylint
 black
 flake8
 bandit
+pytest
 
 # Typing including lxml for html report
 mypy
