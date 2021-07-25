@@ -4,7 +4,7 @@
 # pylint: disable=import-outside-toplevel,global-statement
 
 
-def get_version():
+def get_version() -> str:
     """Get version number"""
     import os  # pylint: disable=redefined-outer-name
 
@@ -16,37 +16,27 @@ __version__ = get_version()
 __all__ = ["__version__"]
 
 
-def import_all_modules():
+def import_all_modules() -> None:
     """Load all modules"""
     global __all__
-
-    from . import (
-        dataframe,
-        graph,
-        python_interactive,
-        quantize,
-        statistics,
-        utils,
-        weighted,
-        matplotlib_tools,
-        plotly_tools,
-    )
-
-    globals().update(locals())
+    import importlib
 
     modules = [
-        dataframe,
-        graph,
-        python_interactive,
-        quantize,
-        statistics,
-        utils,
-        weighted,
-        matplotlib_tools,
-        plotly_tools,
+        "dataframe",
+        "graph",
+        "python_interactive",
+        "quantize",
+        "statistics",
+        "utils",
+        "weighted",
+        "matplotlib_tools",
+        "plotly_tools",
     ]
 
-    for mod in modules:
-        all_public = getattr(mod, "__all__", [])
-        __all__ += all_public
-        globals().update({name: getattr(mod, name) for name in all_public})
+    for module_name in modules:
+        module = importlib.import_module(f"{__package__}.{module_name}")
+        names = module.__all__  # type: ignore
+        namespace = {name: getattr(module, name) for name in names}  # type: ignore
+        namespace[module_name] = module  # type: ignore
+        __all__ += namespace.keys()  # type: ignore
+        globals().update(namespace)  # type: ignore

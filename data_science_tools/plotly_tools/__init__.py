@@ -2,6 +2,8 @@
 """
 # flake8: noqa: F403,F401
 
+__all__ = ["plotly"]
+
 try:
     import plotly
 except ImportError:
@@ -14,7 +16,7 @@ else:
 
     from ._subplots import *
 
-    __all__ = _subplots.__all__ + [
+    __all__ += _subplots.__all__ + [
         "go",
         "plotly",
         "px",
