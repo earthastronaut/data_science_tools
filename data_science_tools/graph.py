@@ -20,6 +20,13 @@ logger.setLevel("INFO")
 Node = TypeVar("Node", Hashable, str, int, float)
 
 
+__all__ = [
+    "Node",
+    "SearchGraphCycleError",
+    "search_graph",
+]
+
+
 class SearchGraphCycleError(Exception):
     """Raise this error when a cycle is found when searching a graph"""
 
