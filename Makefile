@@ -17,7 +17,7 @@ build:
 	@echo "Check that directory is clean. Please commit all changes."
 	[ "${GIT_STATUS_SUMMARY}" = "" ]  # [ "$$(git status --porcelain)" = "" ]
 	@echo 'Check that tag is current. Run `make git-tag` to add tag.'
-	[ "${GIT_TAG}" = "${VERSION}" ]  # [ "$$(git describe --abbrev=0 --tags)" = "$$(make version)" ]
+	[ "${GIT_TAG}" = "${PROJECT_VERSION}" ]  # [ "$$(git describe --abbrev=0 --tags)" = "$$(make version)" ]
 	source activate.sh && python setup.py sdist bdist_wheel
 
 
