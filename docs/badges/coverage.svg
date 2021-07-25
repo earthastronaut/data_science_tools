@@ -8,13 +8,13 @@
     </ns0:mask>
     <ns0:g mask="url(#a)">
         <ns0:path fill="#323234" d="M0 0h63v20H0z" />
-        <ns0:path fill="#97CA00" d="M63 0h36v20H63z" />
+        <ns0:path fill="#dfb317" d="M63 0h36v20H63z" />
         <ns0:path fill="url(#b)" d="M0 0h99v20H0z" />
     </ns0:g>
     <ns0:g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
         <ns0:text x="31.5" y="15" fill="#010101" fill-opacity=".3">coverage</ns0:text>
         <ns0:text x="31.5" y="14">coverage</ns0:text>
-        <ns0:text x="80" y="15" fill="#010101" fill-opacity=".3">78%</ns0:text>
-        <ns0:text x="78" y="14">78%</ns0:text>
+        <ns0:text x="80" y="15" fill="#010101" fill-opacity=".3">73%</ns0:text>
+        <ns0:text x="78" y="14">73%</ns0:text>
     </ns0:g>
 </ns0:svg>
