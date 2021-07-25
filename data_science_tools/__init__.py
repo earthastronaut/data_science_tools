@@ -24,7 +24,8 @@ from .weighted import *
 
 def get_version():
     """Get version number"""
-    # import os TODO: update this from *
+    # TODO: remove the redefine-outer-name when removing *
+    import os  # pylint: disable=redefined-outer-name,import-outside-toplevel
 
     with open(os.path.join(os.path.dirname(__file__), "__version__")) as buffer:
         return buffer.readline().strip()

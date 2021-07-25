@@ -42,8 +42,7 @@ lint:
 	source activate.sh \
 		&& pylint.sh data_science_tools \
 		&& flake8.sh data_science_tools \
-		&& black.sh --check data_science_tools \
-		&& bandit.sh data_science_tools
+		&& black.sh --check data_science_tools
 
 ## Run mypy type check
 type-check:
