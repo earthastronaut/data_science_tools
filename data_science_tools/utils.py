@@ -5,11 +5,9 @@ from typing import Any
 
 __all__ = ["DotDict"]
 
-# %% DotDict
-
 
 class DotDict(dict):
-    """ dot.notation access to dictionary attributes """
+    """dot.notation access to dictionary attributes"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,6 +43,3 @@ class DotDict(dict):
 
     def __delattr__(self, name: str):
         return self.__delitem__(name)
-
-
-# %%

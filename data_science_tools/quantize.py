@@ -12,7 +12,7 @@ __all__ = [
 
 
 def get_quantize_centers(values, centers=None):
-    """ Get the default centers as array given some values """
+    """Get the default centers as array given some values"""
     if centers is None:
         centers = np.linspace(np.min(values), np.max(values), 10)
     elif isinstance(centers, int):
@@ -54,10 +54,10 @@ def quantize_hist(values, centers=None):
 
 
 class QuantizeTest(unittest.TestCase):
-    """ Unittests for quantize functions """
+    """Unittests for quantize functions"""
 
     def test_quantize_values(self):
-        """ Test quantize values """
+        """Test quantize values"""
         quantize = np.array([-5, 2, 10])
         values = np.array([-10, -4, 1, 1, 1, 20, 5, 5.9, 7, 7, 16, 17])
         solution = np.array([-5, -5, 2, 2, 2, 10, 2, 2, 10, 10, 10, 10])

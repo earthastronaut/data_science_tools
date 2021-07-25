@@ -13,7 +13,7 @@ __all__ = [
 
 
 def humanize_number(x):
-    """ Convert number to human readable string. """
+    """Convert number to human readable string."""
     abs_x = abs(x)
     if abs_x > 1e6:
         return f"{x/1e6:.0f}m"
@@ -26,7 +26,7 @@ def humanize_number(x):
 
 
 def axis_format_percent(xaxis=False, fmt="{x:.0%}"):
-    """ Format axis ticks as percent """
+    """Format axis ticks as percent"""
     if xaxis:
         axis = plt.gca().xaxis
     else:
@@ -35,7 +35,7 @@ def axis_format_percent(xaxis=False, fmt="{x:.0%}"):
 
 
 def axis_format_humanize_number(xaxis=False):
-    """ Format axis ticks as human number """
+    """Format axis ticks as human number"""
     if xaxis:
         axis = plt.gca().xaxis
     else:
@@ -48,7 +48,7 @@ def axis_format_humanize_number(xaxis=False):
 
 
 def axis_format_time(xaxis=True, month_locator_kws=None):
-    """ Format axis ticks as time """
+    """Format axis ticks as time"""
     if xaxis:
         axis = plt.gca().xaxis
     else:

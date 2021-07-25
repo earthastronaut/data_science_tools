@@ -10,7 +10,7 @@ from data_science_tools import weighted
 
 
 class TestWeighted(unittest.TestCase):
-    """ Unit tests for weighted statistics """
+    """Unit tests for weighted statistics"""
 
     def test_weighted_mean_even_weights(self):
         actual = weighted.mean([1, 2, 3], [1, 1, 1])

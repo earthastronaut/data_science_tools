@@ -26,8 +26,12 @@ jobs:
             -   name: Run Unit Tests
                 run: make test
             # Lint Check
-            -   name: Lint Check
-                run: make lint
+            -   name: Pylint Check
+                run: source activate.sh && pylint.sh data_science_tools
+            -   name: Flake8 Check
+                run: source activate.sh && flake8.sh data_science_tools
+            -   name: Black Check
+                run: source activate.sh && black.sh --check data_science_tools
             # Type Check
             -   name: Run Code Type Check
                 run: make type-check

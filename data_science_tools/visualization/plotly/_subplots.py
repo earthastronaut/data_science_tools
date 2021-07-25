@@ -18,7 +18,7 @@ __all__ = [
 
 
 def placeholder(*args, **kwargs):  # pylint: disable=unused-argument
-    """ Placeholder to appease the linting gods """
+    """Placeholder to appease the linting gods"""
 
 
 class FigureSubplot:

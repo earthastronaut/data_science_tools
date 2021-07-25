@@ -12,7 +12,7 @@ from data_science_tools import statistics
 
 
 class TestBootstrap(unittest.TestCase):
-    """ Test bootstrap helper """
+    """Test bootstrap helper"""
 
     def test_bootstrap_null(self):
         def func(_, a, b=1):
