@@ -63,7 +63,8 @@ class QuantizeTest(unittest.TestCase):
         solution = np.array([-5, -5, 2, 2, 2, 10, 2, 2, 10, 10, 10, 10])
         self.assertTrue(np.all(quantize_values(values, quantize) == solution))
 
-    def test_quantize_hist(self):
+    @staticmethod
+    def test_quantize_hist():
         """test"""
         quantize = np.array([-5, 2, 10])
         values = np.array([-10, -4, 1, 1, 1, 20, 5, 5.9, 7, 7, 16, 17])
