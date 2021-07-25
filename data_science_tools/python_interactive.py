@@ -33,6 +33,8 @@ import sys
 import importlib
 import logging
 import warnings
+from typing import Dict, Sequence
+from types import ModuleType
 
 try:
     import builtins
@@ -40,7 +42,6 @@ except ImportError:
     import __builtin__ as builtins  # type: ignore
 
 from .graph import search_graph
-from .types import Dict, Sequence, ModuleType
 
 __all__ = [
     "execfile",

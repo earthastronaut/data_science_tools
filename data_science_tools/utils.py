@@ -1,7 +1,7 @@
 """ General python utilities.
 """
 
-from .types import Any
+from typing import Any
 
 __all__ = ["DotDict"]
 
