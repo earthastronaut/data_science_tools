@@ -1,32 +1,29 @@
 """ For installing package. See LICENSE
 """
-import re
 from setuptools import setup, find_packages
 
-# Descriptions
-SHORT_DESCRIPTION = "Various tools useful for data science work"
-with open("README.md") as f:
-    LONG_DESCRIPTION = f.read()
 
-# version
-with open("./data_science_tools/__init__.py") as f:
-    VERSION = next(
-        re.finditer(
-            r"\n__version__ *= *[\'\"]([0-9\.]+)[\'\"]",
-            f.read(),
-        )
-    ).groups()[0]
+def load_description():
+    """Return description"""
+    with open("README.md") as buffer:
+        return buffer.read()
+
+
+def load_version():
+    """Return the version number"""
+    with open("data_science_tools/__version__") as buffer:
+        return buffer.readline().strip()
 
 
 setup(
     name="data_science_tools",
-    version=VERSION,
+    version=load_version(),
     author="Dylan Gregersen",
     author_email="an.email0101@gmail.com",
     url="https://github.com/earthastronaut/data_science_tools",
     license="MIT",
-    description=SHORT_DESCRIPTION,
-    long_description=LONG_DESCRIPTION,
+    description="Various tools useful for data science work",
+    long_description=load_description(),
     python_requires=">=3.6",
     packages=find_packages(),
     include_package_data=True,
