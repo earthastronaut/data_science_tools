@@ -24,7 +24,7 @@ from .weighted import *
 
 def get_version():
     """Get version number"""
-    import os
+    # import os TODO: update this from *
 
     with open(os.path.join(os.path.dirname(__file__), "__version__")) as buffer:
         return buffer.readline().strip()
