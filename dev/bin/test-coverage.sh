@@ -2,7 +2,7 @@
 set -e
 MIN_COVERAGE_PERCENT=70
 ROOT_PATH=$(git rev-parse --show-toplevel)
-CONFIG_PATH=${ROOT_PATH}/scripts/config/coveragerc.ini
+CONFIG_PATH=${ROOT_PATH}/dev/config/coveragerc.ini
 COVERAGE_REPORT_PATH=${ROOT_PATH}/docs/coverage.report
 COVERAGE_BADGE_PATH=${ROOT_PATH}/docs/badges/coverage.svg
 

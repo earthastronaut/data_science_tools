@@ -26,7 +26,9 @@ clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 	find . -type d -name "data_science_tools.egg-info" | xargs rm -r $1
-	rm -rf .venv
+	rm -rf dist && true
+	rm -rf build && true
+	rm -rf .venv && true
 
 ## Run unit tests with coverage
 test:

@@ -18,7 +18,7 @@ then
 else
     echo "Create python virtual environment ${VENV}"
     python3 -m venv ${VENV}
-    echo export PATH=${PROJECT_PATH}/scripts/bin:\$PATH >> ${VENV}/bin/activate
+    echo export PATH=${PROJECT_PATH}/dev/bin:\$PATH >> ${VENV}/bin/activate
     source ${VENV}/bin/activate
     pip3 install --upgrade pip setuptools wheel
     pip3 install -r ${PROJECT_PATH}/requirements.txt

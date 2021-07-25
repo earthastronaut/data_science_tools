@@ -1,15 +1,14 @@
-Name                                                        Stmts   Miss Branch BrPart  Cover
----------------------------------------------------------------------------------------------
-data_science_tools/__init__.py                                  6      0      0      0   100%
-data_science_tools/dataframe.py                               147     36     64      7    75%
-data_science_tools/graph.py                                    36      1     16      2    94%
-data_science_tools/quantize.py                                 25      5      4      2    76%
-data_science_tools/statistics.py                               38      6     18      5    80%
-data_science_tools/utils.py                                    30      1      0      0    97%
-data_science_tools/visualization/__init__.py                    0      0      0      0   100%
-data_science_tools/visualization/matplotlib/__init__.py        15      3      2      1    76%
-data_science_tools/visualization/matplotlib/formatters.py      31     24     12      0    16%
-data_science_tools/visualization/matplotlib/visualize.py       87     22     36      8    67%
-data_science_tools/weighted.py                                 35      9     12      6    68%
----------------------------------------------------------------------------------------------
-TOTAL                                                         450    107    164     31    72%
+Name                                                Stmts   Miss Branch BrPart  Cover
+-------------------------------------------------------------------------------------
+data_science_tools/__init__.py                         14      7      4      0    39%
+data_science_tools/dataframe.py                       147     36     64      7    75%
+data_science_tools/graph.py                            37      1     16      2    94%
+data_science_tools/matplotlib_tools/__init__.py        15      3      2      1    76%
+data_science_tools/matplotlib_tools/formatters.py      31     24     12      0    16%
+data_science_tools/matplotlib_tools/visualize.py       87     22     36      8    67%
+data_science_tools/quantize.py                         25      5      4      2    76%
+data_science_tools/statistics.py                       38      6     18      5    80%
+data_science_tools/utils.py                            30      1      0      0    97%
+data_science_tools/weighted.py                         35      9     12      6    68%
+-------------------------------------------------------------------------------------
+TOTAL                                                 459    114    168     31    71%

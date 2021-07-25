@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 ROOT_PATH=$(git rev-parse --show-toplevel)
-mypy --config-file=${ROOT_PATH}/scripts/config/mypy.ini $@
+mypy --config-file=${ROOT_PATH}/dev/config/mypy.ini $@
 
 python -c "print('Generate mypy badge') ;\
     import lxml.html ;\
