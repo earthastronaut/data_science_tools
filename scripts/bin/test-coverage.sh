@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+MIN_COVERAGE_PERCENT=70
 ROOT_PATH=$(git rev-parse --show-toplevel)
 CONFIG_PATH=${ROOT_PATH}/scripts/config/coveragerc.ini
 COVERAGE_REPORT_PATH=${ROOT_PATH}/docs/coverage.report
@@ -14,7 +15,7 @@ coverage report --rcfile=${CONFIG_PATH} > ${COVERAGE_REPORT_PATH}
 cat ${COVERAGE_REPORT_PATH}
 
 # check coverage and update badge
-echo ${MIN_COVERAGE_PERCENT:-80} | python -c "min_percentage = int(input('')); \
+echo ${MIN_COVERAGE_PERCENT} | python -c "min_percentage = int(input('')); \
     from xml.etree.ElementTree import ElementTree; \
     percentage = int(open('${COVERAGE_REPORT_PATH}').read().split('\n')[-2].split()[-1].strip('%')); \
     brightgreen, green, yellow, orange, red = '#4c1', '#97CA00', '#dfb317', '#fe7d37', '#e05d44'; \
