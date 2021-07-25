@@ -13,7 +13,7 @@ GIT_STATUS_SUMMARY=$(shell git status --porcelain)
 #################################################################################
 
 # Build distribution
-build: version_check
+build:
 	@echo "Check that directory is clean. Please commit all changes."
 	[ "${GIT_STATUS_SUMMARY}" = "" ]  # [ "$$(git status --porcelain)" = "" ]
 	@echo 'Check that tag is current. Run `make git-tag` to add tag.'
