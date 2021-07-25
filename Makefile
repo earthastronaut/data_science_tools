@@ -7,18 +7,17 @@ PROJECT_VERSION:=$(shell head -n 1 data_science_tools/__version__)
 # LAST_VERSION_TAG:=$(shell git describe --tags $(shell git rev-list --tags --max-count=1) | grep -oEi '[0-9\.]+')
 GIT_TAG=$(shell git describe --abbrev=0 --tags)
 GIT_STATUS_SUMMARY=$(shell git status --porcelain)
-MIN_COVERAGE_PERCENT:=78
 
 #################################################################################
 # COMMANDS
 #################################################################################
 
 # Build distribution
-build: version_check
+build:
 	@echo "Check that directory is clean. Please commit all changes."
 	[ "${GIT_STATUS_SUMMARY}" = "" ]  # [ "$$(git status --porcelain)" = "" ]
 	@echo 'Check that tag is current. Run `make git-tag` to add tag.'
-	[ "${GIT_TAG}" = "${VERSION}" ]  # [ "$$(git describe --abbrev=0 --tags)" = "$$(make version)" ]
+	[ "${GIT_TAG}" = "${PROJECT_VERSION}" ]  # [ "$$(git describe --abbrev=0 --tags)" = "$$(make version)" ]
 	source activate.sh && python setup.py sdist bdist_wheel
 
 
