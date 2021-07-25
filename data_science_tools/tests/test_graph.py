@@ -137,3 +137,32 @@ class TestSearchGraph(unittest.TestCase):
             ["A", "C", "B", "D"],
         ]
         self._assert_list_equal(actual, expected)
+
+    def test_search_graph_callback_cycle(self):
+        actual = []
+
+        graph.search_graph(
+            "A",
+            get_children=EXAMPLE_GRAPH_B_CYCLE.get,
+            callback=actual.append,
+            callback_cycle_check=graph.cycle_check_child_in_path_n(2),
+            raise_cycle_error=False,
+        )
+        expected = [
+            ["A"],
+            ["A", "B"],
+            ["A", "B", "D"],
+            ["A", "C"],
+            ["A", "C", "A"],
+            ["A", "C", "A", "B"],
+            ["A", "C", "A", "B", "D"],
+            ["A", "C", "A", "C"],
+            # cycle ["A", "C", "A", "C", "A"],
+            ["A", "C", "A", "C", "D"],
+            ["A", "C", "A", "C", "B"],
+            ["A", "C", "A", "C", "B", "D"],
+            ["A", "C", "D"],
+            ["A", "C", "B"],
+            ["A", "C", "B", "D"],
+        ]
+        self._assert_list_equal(actual, expected)
