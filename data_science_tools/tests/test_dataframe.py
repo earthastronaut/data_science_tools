@@ -54,7 +54,7 @@ class TestCoalesce(unittest.TestCase):
 
 
 class TestWindowFunction(unittest.TestCase):
-    """ Test window_functions """
+    """Test window_functions"""
 
     def _generate_example(self, size=10):
         df_test = pd.DataFrame()

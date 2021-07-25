@@ -55,7 +55,7 @@ PY3 = sys.version[0] == "3"
 
 
 def interactive_only_warning():
-    """ Raise a warning that tools are only suppose to be interactive """
+    """Raise a warning that tools are only suppose to be interactive"""
     msg = "This tool is only meant to be used interactivcely and not in a script"
     warnings.warn(msg)
 

@@ -28,7 +28,7 @@ crayons.update(
 
 @functools.wraps(sns.color_palette)
 def color_palette(n_colors=None, **kws):
-    """ Converts seaborn color_palette to hex """
+    """Converts seaborn color_palette to hex"""
     kws["n_colors"] = n_colors
     kws.setdefault("palette", "viridis")
     return map(sns.mpl.colors.rgb2hex, sns.color_palette(**kws))

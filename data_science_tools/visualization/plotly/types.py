@@ -13,11 +13,11 @@ __all__ = [
 
 
 class TScene(metaclass=ABCMeta):
-    """ plotly.graph_objects.layout.Scene """
+    """plotly.graph_objects.layout.Scene"""
 
 
 class TFigure(metaclass=ABCMeta):
-    """ Type for plotly.graph_objects.Figure """
+    """Type for plotly.graph_objects.Figure"""
 
     @abstractmethod
     def get_subplot(

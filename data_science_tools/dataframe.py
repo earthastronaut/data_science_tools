@@ -155,7 +155,7 @@ def outer_join(dataframe1, dataframe2):
 
 
 def sizeof_df(num, size_qualifier=""):
-    """ returns size in human readable format """
+    """returns size in human readable format"""
     for x in ["bytes", "KB", "MB", "GB", "TB"]:
         if num < 1024.0:
             return "%3.1f%s %s" % (num, size_qualifier, x)
@@ -164,7 +164,7 @@ def sizeof_df(num, size_qualifier=""):
 
 
 def memory_usage_of_df(df, deep=False):
-    """ Returns the memory usage of a dataframe """
+    """Returns the memory usage of a dataframe"""
     is_approximate_sizeof = not deep and (
         "object" in df.get_dtype_counts() or pd.api.types.is_object_dtype(df.index)
     )
