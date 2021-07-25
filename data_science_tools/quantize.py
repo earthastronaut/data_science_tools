@@ -57,11 +57,19 @@ class QuantizeTest(unittest.TestCase):
     """Unittests for quantize functions"""
 
     def test_quantize_values(self):
-        """Test quantize values"""
+        """test"""
         quantize = np.array([-5, 2, 10])
         values = np.array([-10, -4, 1, 1, 1, 20, 5, 5.9, 7, 7, 16, 17])
         solution = np.array([-5, -5, 2, 2, 2, 10, 2, 2, 10, 10, 10, 10])
         self.assertTrue(np.all(quantize_values(values, quantize) == solution))
+
+    def test_quantize_hist(self):
+        """test"""
+        quantize = np.array([-5, 2, 10])
+        values = np.array([-10, -4, 1, 1, 1, 20, 5, 5.9, 7, 7, 16, 17])
+        actual = quantize_hist(values, quantize)
+        expected = pd.Series([2, 5, 5], index=[-5, 2, 10])
+        pd.testing.assert_series_equal(actual, expected)
 
 
 if __name__ == "__main__":
