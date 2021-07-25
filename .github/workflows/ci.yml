@@ -12,29 +12,26 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 5
         steps:
-            -   uses: actions/checkout@v2
-                with:
-                    fetch-depth: 0
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
             # Initialize Enviornment
-            -   name: Set up Python 3.6
-                uses: actions/setup-python@v1
-                with:
-                    python-version: 3.6
-            -   name: Install dependencies
-                run: make requirements
+            - name: Set up Python 3.6
+              uses: actions/setup-python@v1
+              with:
+                  python-version: 3.6
+            - name: Install dependencies
+              run: make requirements
             # Unit Tests
-            -   name: Run Unit Tests
-                run: make test
+            - name: Run Unit Tests
+              run: make test
             # Lint Check
-            -   name: Pylint Check
-                run: source activate.sh && pylint.sh data_science_tools
-            -   name: Flake8 Check
-                run: source activate.sh && flake8.sh data_science_tools
-            -   name: Black Check
-                run: source activate.sh && black.sh --check data_science_tools
+            - name: Pylint Check
+              run: source activate.sh && pylint.sh data_science_tools
+            - name: Flake8 Check
+              run: source activate.sh && flake8.sh data_science_tools
+            - name: Black Check
+              run: source activate.sh && black.sh --check data_science_tools
             # Type Check
-            -   name: Run Code Type Check
-                run: make type-check
-            # Version Check
-            -   name: Check Version Tags
-                run: make version_check
+            - name: Run Code Type Check
+              run: make type-check
