@@ -2,14 +2,19 @@
 
 Made this semi-private because there is plotly.subplots
 """
+# standard
 import functools
+import inspect
+from typing import Optional, Tuple
+from collections.abc import Callable
 
-from typing import Dict, Union, Any, Callable
-
+# external
 import pandas as pd
+import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+# internal
 from .types import TFigure
 
 __all__ = [
@@ -21,104 +26,109 @@ def placeholder(*args, **kwargs):  # pylint: disable=unused-argument
     """Placeholder to appease the linting gods"""
 
 
-class FigureSubplot:
-    """Plotly subplot is an axes of a figure
-
-    Methods of the subplot will use the figure.{method} but inject
-    parameters like row and col where necessary to select the specific
-    subplot.
-
+class FigureSubplot(go.Figure):
+    """Pass through Figure.<method> wrapping row, col, secondary_y as
+    parameters
     """
 
-    # These are overwritten but useful for linters to know
-    add_trace = placeholder
-    add_scatter = placeholder
-    add_histogram = placeholder
-    update_xaxes = placeholder
-    update_yaxes = placeholder
-
-    # @overload
-    # def __init__(
-    #     self, figure: dict, row: int = 1, col: int = 1, secondary_y: bool = False
-    # ):
-    #     pass
-
-    # @overload
-    # def __init__(  # noqa
-    #     self, figure: TFigure, row: int = 1, col: int = 1, secondary_y: bool = False
-    # ):
-    #     pass
-
-    def __init__(  # noqa
+    def __init__(
         self,
-        figure: Union[dict, TFigure] = None,
+        figure: Optional[TFigure] = None,
         row: int = 1,
         col: int = 1,
         secondary_y: bool = False,
     ):
-        self.figure: TFigure
         if isinstance(figure, dict):
-            self.figure = make_subplots(**figure)
+            fig = plotly.subplots.make_subplots(**figure)
         elif figure is None:
-            self.figure = make_subplots(rows=1, cols=1)
+            fig = plotly.subplots.make_subplots(rows=1, cols=1)
+        elif isinstance(figure, go.Figure):
+            fig = figure
         else:
-            self.figure = figure
-        self.subplot = self.figure.get_subplot(row, col)
+            raise TypeError(f"Invalid figure type {type(figure)}")
 
-        self.row = row
-        self.col = col
-        self.secondary_y = secondary_y
+        super().__init__()
+        for key, obj in fig.__dict__.items():
+            if not callable(obj):
+                self.__dict__[key] = obj
 
-        row_col = ["row", "col"]
-        row_col_secondary_y = row_col + ["secondary_y"]
+        self._row = row
+        self._col = col
+        self._secondary_y = secondary_y
+        secondary = 1 if secondary_y else 0
+        self._subplot_ref = fig._grid_ref[row - 1][col - 1][secondary]
 
-        wrap_figure_methods: Dict[str, Dict[str, Any]] = {
-            "add_trace": {
-                "wrap_kws": row_col_secondary_y,
-            },
-            "add_scatter": {
-                "wrap_kws": row_col_secondary_y,
-                "wrap_y_series": True,
-            },
-            "add_histogram": {
-                "wrap_kws": row_col_secondary_y,
-            },
-            "update_xaxes": {
-                "wrap_kws": row_col,
-            },
-            "update_yaxes": {
-                "wrap_kws": row_col,
-            },
-        }
+        self._init_wrap_figure_methods(("row", "col"))
+        self._init_wrap_figure_methods(("row", "col", "secondary_y"))
+        self._init_wrap_figure_methods(("rows", "cols"))
 
-        for method_name, kws in wrap_figure_methods.items():
-            func = self._wrapped_figure_method(method_name, *kws["wrap_kws"])
-            if kws.get("wrap_y_series", False):
-                func = self._wrap_y_series(func)
-            setattr(self, method_name, func)
+    @property
+    def figure(self):
+        """Pass through for the figure of the subplot. """
+        return self
 
-    @staticmethod
-    def _wrap_y_series(method: Callable):
-        """Wraps the function so if y is a pandas Series then it will
-        convert y series to x=y.index and y=y.values and name=y.name
-        """
+    @property
+    def subplot_ref(self):
+        """Pass through for the figure of the subplot. """
+        return self._subplot_ref
 
-        @functools.wraps(method)
-        def wrapped(*args, **kws):
-            possible_series = kws.get("y", None)
-            if isinstance(possible_series, pd.Series):
-                kws["x"] = possible_series.index.values
-                kws["y"] = possible_series.values
-                kws.setdefault("name", possible_series.name)
-            return method(*args, **kws)
+    @property
+    def row(self):
+        """Subplot row number. Figure has defined properties. """
+        return self._row
 
-        return wrapped
+    @property
+    def col(self):
+        """Subplot column number. Figure has defined properties. """
+        return self._col
 
-    def _wrapped_figure_method(self, method_name: str, *keywords):
+    @property
+    def secondary_y(self):
+        """Subplot secondary_y. Figure has defined properties. """
+        return self._secondary_y
+
+    rows = row
+    cols = col
+    # secondary_ys = secondary_y # not treated the same as the other two
+
+    def _init_wrap_figure_methods(self, keywords: Tuple[str, ...]):
+        """ Meant to be run once to wrape functions for these keywords """
+        for method_name in self._subplot_method_names(keywords):
+            setattr(
+                self,
+                method_name,
+                self._wrapped_figure_method(getattr(self, method_name), keywords),
+            )
+
+    def _subplot_method_names(self, keywords: Tuple[str, ...]):
+        """Iterate all methods which have subplot_keywords. """
+        keywords_set = set(keywords)
+        for method_name in dir(self):
+            if method_name.startswith("_"):
+                continue
+
+            method = getattr(self, method_name)
+            if not callable(method):
+                continue
+
+            is_wrapped_figure_method = getattr(
+                method, "_is_wrapped_figure_method", False
+            )
+            if is_wrapped_figure_method:
+                continue
+
+            try:
+                sig = inspect.signature(method)
+            except ValueError:
+                continue
+            method_keywords = sig.parameters.keys()
+            if set(method_keywords).issuperset(keywords_set):
+                yield method_name
+
+    def _wrapped_figure_method(self, method: Callable, keywords: Tuple[str, ...]):
         """Take the method from the self.figure and overwrite keywords
-        with attributes from this object
+        with attributes from this object.
         """
-        method = getattr(self.figure, method_name)
 
         @functools.wraps(method)
         def wrapped(*args, **kws):
@@ -126,6 +136,7 @@ class FigureSubplot:
                 kws.setdefault(key, getattr(self, key))
             return method(*args, **kws)
 
+        setattr(wrapped, "_is_wrapped_figure_method", True)
         return wrapped
 
 
