@@ -5,14 +5,14 @@ Made this semi-private because there is plotly.subplots
 # standard
 import functools
 import inspect
-from typing import Optional, Tuple
+from typing import Union, Tuple, List, Dict
 from collections.abc import Callable
 
 # external
-import pandas as pd
 import plotly
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import numpy as np
+import numpy.typing  # pylint: disable=import-error,no-name-in-module
 
 # internal
 from .types import TFigure
@@ -20,6 +20,8 @@ from .types import TFigure
 __all__ = [
     "FigureSubplot",
 ]
+
+BaseTypes = Union[str, bool, float, int]
 
 
 def placeholder(*args, **kwargs):  # pylint: disable=unused-argument
@@ -33,7 +35,7 @@ class FigureSubplot(go.Figure):
 
     def __init__(
         self,
-        figure: Optional[TFigure] = None,
+        figure: TFigure = None,
         row: int = 1,
         col: int = 1,
         secondary_y: bool = False,
@@ -140,22 +142,157 @@ class FigureSubplot(go.Figure):
         return wrapped
 
 
-if __name__ == "__main__":
-    import numpy as np
+def _get_row_cols(
+    rows: int = None,
+    cols: int = None,
+    subplot_count: int = None,
+) -> Tuple[int, int]:
+    """Get rows and cols with defaults"""
+    if subplot_count:
+        subplot_count = int(subplot_count)
+        if rows is None and cols is None:
+            raise ValueError("must specify either rows or cols with subplot_count")
+        elif rows is not None and cols is not None:
+            raise ValueError("must not specify all rows, cols, subplot_count")
+        elif rows is None and cols is not None:
+            rows = np.ceil(subplot_count / cols)
+        elif rows is not None and cols is None:
+            cols = np.ceil(subplot_count / rows)
+    if rows is None:
+        rows = 1
+    if cols is None:
+        cols = 1
+    return rows, cols
 
-    x = np.arange(-10, 10, 0.2)
-    y = np.sin(x)
 
-    fig = make_subplots(2, 1)
-    ax = FigureSubplot(fig, 1, 1)
-    ax.add_trace(go.Scatter(x=x, y=y))
+def _convert_figure_to_subplots(
+    figure: go.Figure,
+) -> numpy.typing.NDArray[FigureSubplot]:
+    """Take the figure grid ref and convert to array"""
+    grid_ref = figure._grid_ref  # pylint: disable=protected-access
+    row_subplots = []
+    for row_i, row in enumerate(grid_ref):
+        col_subplots = []
+        for col_i, col in enumerate(row):
+            secondary_subplots = []
+            for secondary_i, _ in enumerate(col):
+                if secondary_i > 1:
+                    raise Exception("Unknown extra subplot")
+                secondary_y_subplot = secondary_i == 1
+                secondary_subplots.append(
+                    FigureSubplot(
+                        figure,
+                        row=row_i + 1,
+                        col=col_i + 1,
+                        secondary_y=secondary_y_subplot,
+                    )
+                )
+            col_subplots.append(secondary_subplots)
+        row_subplots.append(col_subplots)
+    subplots = np.array(row_subplots)
+    return subplots
 
-    ax = FigureSubplot(fig, 2, 1)
-    ax.add_trace(go.Scatter(x=x, y=y))
-    fig.add_trace(go.Scatter(x=x, y=y + 0.5), row=2, col=1)
-    ax.add_scatter(x=x, y=y - 0.5)
-    ax.add_scatter(y=pd.Series(y - 0.8, index=x, name="series"))
-    ax.update_xaxes(title="Hello X")
-    ax.update_yaxes(title="Hello Y")
 
-    fig.show()
+def make_subplots(
+    rows: int = None,
+    cols: int = None,
+    subplot_count: int = None,
+    secondary_y: bool = False,
+    shared_xaxes: Union[bool, str] = False,
+    shared_yaxes: Union[bool, str] = False,
+    start_cell: str = "top-left",
+    print_grid: bool = False,
+    horizontal_spacing: float = None,
+    vertical_spacing: float = None,
+    subplot_titles: List[str] = None,
+    column_widths: List[float] = None,
+    column_width: int = 400,
+    row_heights: List[float] = None,
+    row_height: int = 400,
+    specs: List[List[Dict[str, BaseTypes]]] = None,
+    insets: List[List[Dict[str, BaseTypes]]] = None,
+    column_titles: List[str] = None,
+    row_titles: List[str] = None,
+    x_title: str = None,
+    y_title: str = None,
+    figure: go.Figure = None,
+    **kws,
+) -> numpy.typing.NDArray[FigureSubplot]:
+    """Make subplots with FigureSubplot objects
+
+    Returns:
+        NDArray[FigureSubplot]: A grid of the subplots.
+            ndim: 3
+            shape: (rows, cols, secondary_axes)
+    """
+    rows, cols = _get_row_cols(
+        rows=rows,
+        cols=cols,
+        subplot_count=subplot_count,
+    )
+
+    kws.update(
+        rows=rows,
+        cols=cols,
+        shared_xaxes=shared_xaxes,
+        shared_yaxes=shared_yaxes,
+        start_cell=start_cell,
+        print_grid=print_grid,
+        horizontal_spacing=horizontal_spacing,
+        vertical_spacing=vertical_spacing,
+        subplot_titles=subplot_titles,
+        column_widths=column_widths,
+        row_heights=row_heights,
+        specs=specs,
+        insets=insets,
+        column_titles=column_titles,
+        row_titles=row_titles,
+        x_title=x_title,
+        y_title=y_title,
+        figure=figure,
+    )
+
+    if secondary_y:
+        specs = kws["specs"] or []
+        for i in range(rows):
+            if i >= len(specs):
+                specs.append([])
+            for j in range(cols):
+                if j >= len(specs[i]):
+                    specs[i].append({"secondary_y": True})
+                else:
+                    specs[i][j]["secondary_y"] = True
+        kws["specs"] = specs
+
+    if kws.get("shared_xaxes", False):
+        kws["vertical_spacing"] = kws.get("vertical_spacing") or 0.01
+
+    figure = plotly.subplots.make_subplots(**kws)
+    subplots = _convert_figure_to_subplots(figure)
+    layout: Dict[str, BaseTypes] = {}
+    if column_width is None:
+        layout["width"] = column_width * subplots.shape[1]
+    if row_height is None:
+        layout["height"] = row_height * subplots.shape[0]
+    figure.update_layout(**layout)
+    return subplots
+
+
+make_subplots.__doc__ += plotly.subplots.make_subplots.__doc__
+
+
+# if __name__ == "__main__":
+#     import numpy as np
+#     x = np.arange(-10, 10, 0.2)
+#     y = np.sin(x)
+#     fig = make_subplots(2, 1)
+#     ax = FigureSubplot(fig, 1, 1)
+#     ax.add_trace(go.Scatter(x=x, y=y))
+#     ax = FigureSubplot(fig, 2, 1)
+#     ax.add_trace(go.Scatter(x=x, y=y))
+#     fig.add_trace(go.Scatter(x=x, y=y + 0.5), row=2, col=1)
+#     ax.add_scatter(x=x, y=y - 0.5)
+#     ax.add_scatter(y=pd.Series(y - 0.8, index=x, name="series"))
+#     ax.update_xaxes(title="Hello X")
+#     ax.update_yaxes(title="Hello Y")
+#     fig.show()
