@@ -31,10 +31,18 @@ def quantize_values(values, centers=None):
     Returns:
         (nparray[Float]): Array same as values but quantized to the centers.
     """
+    nanmask = np.isnan(values)
     centers = get_quantize_centers(values, centers)
     midpoints = (centers[1:] + centers[:-1]) * 0.5
     idx = np.digitize(values, midpoints)
-    return centers[idx]
+    quant = centers[idx]
+    if np.any(nanmask):
+        try:
+            quant[nanmask] = np.nan
+        except ValueError:
+            quant = quant.astype(float)
+            quant[nanmask] = np.nan
+    return quant
 
 
 def quantize_hist(values, centers=None):
@@ -71,6 +79,34 @@ class QuantizeTest(unittest.TestCase):
         actual = quantize_hist(values, quantize)
         expected = pd.Series([2, 5, 5], index=[-5, 2, 10])
         pd.testing.assert_series_equal(actual, expected)
+
+    @staticmethod
+    def test_quantize_nulls():
+        """test"""
+        values = np.array([2, 2, np.nan, 5, 2, np.nan, 4])
+        actual = quantize_values(values, [1, 6])
+        expected = np.array([1, 1, np.nan, 6, 1, np.nan, 6])
+        np.testing.assert_array_equal(actual, expected)
+
+    @staticmethod
+    def test_quantize_nulls_3d():
+        """test"""
+        values = np.array(
+            [
+                [2, 2, np.nan, 5, 2, np.nan, 4],
+                [2, 2, np.nan, 5, 2, np.nan, 4],
+                [np.nan, 2, np.nan, 5, 2, np.nan, 4],
+            ]
+        )
+        actual = quantize_values(values, [1, 6])
+        expected = np.array(
+            [
+                [1, 1, np.nan, 6, 1, np.nan, 6],
+                [1, 1, np.nan, 6, 1, np.nan, 6],
+                [np.nan, 1, np.nan, 6, 1, np.nan, 6],
+            ]
+        )
+        np.testing.assert_array_equal(actual, expected)
 
 
 if __name__ == "__main__":
