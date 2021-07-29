@@ -154,11 +154,12 @@ class FigureSubplot(go.Figure):
                 else:
                     title_kws[key] = value
 
-            for key_to_rename, key_name_with in rename.items():
-                if key.startswith(key_to_rename):
-                    key_rename = key.replace(key_to_rename, key_name_with)
-                    kws[key_rename] = kws.pop(key)
-                    logger.debug(f"rename: {key} to {key_rename}")
+            key_base = key.split("_")[0]
+            key_rename_with = rename.get(key_base)
+            if key_rename_with is not None:
+                key_rename = key.replace(key_base, key_rename_with)
+                kws[key_rename] = kws.pop(key)
+                logger.debug(f"rename: {key} to {key_rename}")
 
         super().update_layout(kws, overwrite=overwrite)
 
