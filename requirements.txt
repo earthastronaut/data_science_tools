@@ -1,5 +1,5 @@
 # Version set based on current version at time of development.
--e .
+-e .[matplotlib,plotly]
 
 # Interactivity
 ipython
