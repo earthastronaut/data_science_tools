@@ -18,6 +18,5 @@ else:
 
     __all__ += subplots.__all__ + [
         "go",
-        "plotly",
         "px",
     ]
