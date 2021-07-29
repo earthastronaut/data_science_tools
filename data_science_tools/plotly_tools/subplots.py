@@ -8,7 +8,7 @@ Made this semi-private because there is plotly.subplots
 import functools
 import inspect
 import logging
-from typing import Any, Union, Tuple, List, Dict
+from typing import Any, Union, Tuple, List, Dict, KeysView
 from collections.abc import Callable
 
 # external
@@ -73,7 +73,7 @@ class FigureSubplot(go.Figure):
         i, j, k = self._array_index
         self._subplot_ref = fig._grid_ref[i][j][k]
 
-        self._init_wrap_figure_methods(
+        defaults = dict(
             row=self.row,
             col=self.col,
             secondary_y=self.secondary_y,
@@ -81,6 +81,8 @@ class FigureSubplot(go.Figure):
             cols=(self.col,),
             secondary_ys=(self.secondary_y,),
         )
+        for method_name in self._subplot_method_names(defaults.keys()):
+            self._wrapped_figure_method(method_name, **defaults)
 
         self._subplot_layout_keywords_rename = {
             "xaxis": next(self.select_xaxes()).plotly_name,  # e.g. xaxis3
@@ -171,10 +173,7 @@ class FigureSubplot(go.Figure):
     @staticmethod
     def _get_new_signature(function: Callable, **defaults) -> inspect.Signature:
         """Get new defaults for function given the """
-        try:
-            sig = inspect.signature(function)
-        except ValueError:
-            return
+        sig = inspect.signature(function)
         parameters = []
         for param in sig.parameters.values():
             if param.name in defaults:
@@ -182,14 +181,7 @@ class FigureSubplot(go.Figure):
             parameters.append(param)
         return sig.replace(parameters=parameters)
 
-    def _init_wrap_figure_methods(self, **defaults):
-        """Initialize by wrapping"""
-        for method_name in self._subplot_method_names(defaults.keys()):
-            setattr(
-                self, method_name, self._wrapped_figure_method(method_name, **defaults)
-            )
-
-    def _subplot_method_names(self, keywords: Tuple[str, ...]):
+    def _subplot_method_names(self, keywords: KeysView[str]):
         """Iterate all methods which have subplot_keywords. """
         keywords_set = set(keywords)
         for method_name in dir(self):
@@ -238,9 +230,9 @@ class FigureSubplot(go.Figure):
         wrapper.__doc__ = f"Subplot Wrapped: row={self.row} col={self.col} secondary_y={self.secondary_y}\n"  # noqa
         if method.__doc__:
             wrapper.__doc__ += method.__doc__
-        wrapper.__signature__ = signature
+        setattr(wrapper, "__signature__", signature)
         setattr(wrapper, "_is_wrapped_figure_method", True)
-        return wrapper
+        setattr(self, method_name, wrapper)
 
 
 def _get_row_cols(
@@ -301,7 +293,7 @@ def _get_specs_updated(
     secondary_y: bool = False,
 ) -> List[List[Dict[str, BaseTypes]]]:
     """Take the specs and update with the parameters"""
-    specs_updated = []
+    specs_updated: List[List[Dict[str, BaseTypes]]] = []
     specs = specs or []
     ####################
     for i in range(rows):
