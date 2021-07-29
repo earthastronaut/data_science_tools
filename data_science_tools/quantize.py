@@ -29,7 +29,15 @@ def quantize_values(values, centers=None):
             attempt to get the centers from the values.
 
     Returns:
-        (nparray[Float]): Array same as values but quantized to the centers.
+        one of:
+            np.ndarray:
+                If isinstance(value, np.ndarray)
+                Array same as values but quantized to the centers. If values is
+                ndarray. shape == values.shape
+            pd.Series:
+                If isinstance(value, pd.Series)
+                Series same as values but quantized to centers. If values is
+                pd.Series. index == values.index
     """
     nanmask = np.isnan(values)
     centers = get_quantize_centers(values, centers)
@@ -42,7 +50,11 @@ def quantize_values(values, centers=None):
         except ValueError:
             quant = quant.astype(float)
             quant[nanmask] = np.nan
-    return quant
+
+    if isinstance(values, pd.Series):
+        return pd.Series(quant, index=values.index)
+    else:
+        return quant
 
 
 def quantize_hist(values, centers=None):
@@ -107,6 +119,16 @@ class QuantizeTest(unittest.TestCase):
             ]
         )
         np.testing.assert_array_equal(actual, expected)
+
+    @staticmethod
+    def test_quantize_series():
+        """test"""
+        values = pd.Series([2, 2, np.nan, 5, 2, np.nan, 4])
+        index = np.arange(len(values))[::-1]
+        values.index = index
+        actual = quantize_values(values, [1, 6])
+        expected = pd.Series([1, 1, np.nan, 6, 1, np.nan, 6], index=index)
+        pd.testing.assert_series_equal(actual, expected)
 
 
 if __name__ == "__main__":
