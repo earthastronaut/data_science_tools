@@ -73,35 +73,24 @@ class FigureSubplot(go.Figure):
         i, j, k = self._array_index
         self._subplot_ref = fig._grid_ref[i][j][k]
 
-        self._xaxis_ref = ""
-        self._yaxis_ref = ""
-        subplot_layout_keywords_rename = {}
-        for key in self._subplot_ref.layout_keys:
-            if key.startswith("xaxis"):
-                self._xaxis_ref = key
-                if key != "xaxis":
-                    subplot_layout_keywords_rename["xaxis"] = key
-
-            if key.startswith("yaxis"):
-                self._yaxis_ref = key
-                if key != "yaxis":
-                    subplot_layout_keywords_rename["yaxis"] = key
-
-        self._subplot_layout_keywords_rename = subplot_layout_keywords_rename
-
         self._init_wrap_figure_methods(
             row=self.row,
             col=self.col,
             secondary_y=self.secondary_y,
-            # rows=(self.row,),
-            # cols=(self.col,),
-            # secondary_ys=(self.secondary_y,),
+            rows=(self.row,),
+            cols=(self.col,),
+            secondary_ys=(self.secondary_y,),
         )
+
+        self._subplot_layout_keywords_rename = {
+            "xaxis": next(self.select_xaxes()).plotly_name,  # e.g. xaxis3
+            "yaxis": next(self.select_yaxes()).plotly_name,  # e.g. yaxis6
+        }
 
     @property
     def figure(self):
         """Pass through for the figure of the subplot. """
-        return self
+        return self._figure
 
     @property
     def subplot_ref(self):
@@ -122,30 +111,6 @@ class FigureSubplot(go.Figure):
     def secondary_y(self):
         """Subplot secondary_y. Figure has defined properties. """
         return self._secondary_y
-
-    rows = row
-    cols = col
-    # secondary_ys = secondary_y # not treated the same as the other two
-
-    @property
-    def xaxis_domain(self):
-        """Get domain range including overlaying"""
-        axis = self.layout[self._xaxis_ref]
-        if axis.overlaying is not None:
-            ref = axis.overlaying.replace("x", "xaxis")  # x5 > xaxis5
-            return self.layout[ref].domain
-        else:
-            return axis.domain
-
-    @property
-    def yaxis_domain(self):
-        """Get domain range including overlaying"""
-        axis = self.layout[self._yaxis_ref]
-        if axis.overlaying is not None:
-            ref = axis.overlaying.replace("y", "yaxis")  # y5 > yaxis5
-            return self.layout[ref].domain
-        else:
-            return axis.domain
 
     def update_layout(
         self, dict1: Dict[str, Any] = None, overwrite: bool = False, **kwargs
@@ -198,19 +163,7 @@ class FigureSubplot(go.Figure):
         super().update_layout(kws, overwrite=overwrite)
 
         if len(title_kws):
-            y = self.yaxis_domain[1]
-            x = (self.xaxis_domain[1] + self.xaxis_domain[0]) * 0.5
-            annotation_kws = dict(
-                showarrow=False,
-                xref="paper",
-                yref="paper",
-                xanchor="center",
-                yanchor="bottom",
-                y=y,
-                x=x,
-            )
-            annotation_kws.update(title_kws)
-            self._figure.add_annotation(**annotation_kws)
+            _add_subplot_title(self._figure, row=self.row, col=self.col, **title_kws)
 
         return self
 
@@ -447,18 +400,43 @@ def make_subplots(
 make_subplots.__doc__ += plotly.subplots.make_subplots.__doc__
 
 
-# if __name__ == "__main__":
-#     import numpy as np
-#     x = np.arange(-10, 10, 0.2)
-#     y = np.sin(x)
-#     fig = make_subplots(2, 1)
-#     ax = FigureSubplot(fig, 1, 1)
-#     ax.add_trace(go.Scatter(x=x, y=y))
-#     ax = FigureSubplot(fig, 2, 1)
-#     ax.add_trace(go.Scatter(x=x, y=y))
-#     fig.add_trace(go.Scatter(x=x, y=y + 0.5), row=2, col=1)
-#     ax.add_scatter(x=x, y=y - 0.5)
-#     ax.add_scatter(y=pd.Series(y - 0.8, index=x, name="series"))
-#     ax.update_xaxes(title="Hello X")
-#     ax.update_yaxes(title="Hello Y")
-#     fig.show()
+def _add_subplot_title(
+    figure: go.Figure, row: int = 1, col: int = 1, **annotation_kws
+) -> go.Figure:
+    """Add title for subplot.
+
+    Subplots use annotations for titles.
+
+    Parameters
+    ----------
+    figure : go.Figure
+        The Figure object that the update_layout method was called on
+    row: int
+        Row number
+    col: int
+        Column number
+    annotation_kws:
+        see help(figure.add_annotation). Some defaults are set for title placement.
+
+    Returns
+    -------
+    FigureSubplot
+        The Figure object that the update_layout method was called on
+
+    """
+    xaxes = list(figure.select_xaxes(row=row, col=col))[0]
+    yaxes = list(figure.select_yaxes(row=row, col=col))[0]
+
+    y = yaxes.domain[1]
+    x = (xaxes.domain[1] + xaxes.domain[0]) * 0.5
+    annotation_defaults = dict(
+        showarrow=False,
+        xref="paper",
+        yref="paper",
+        xanchor="center",
+        yanchor="bottom",
+        y=y,
+        x=x,
+    )
+    annotation_defaults.update(annotation_kws)
+    return figure.add_annotation(**annotation_defaults)
