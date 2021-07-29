@@ -29,12 +29,32 @@ def quantize_values(values, centers=None):
             attempt to get the centers from the values.
 
     Returns:
-        (nparray[Float]): Array same as values but quantized to the centers.
+        one of:
+            np.ndarray:
+                If isinstance(value, np.ndarray)
+                Array same as values but quantized to the centers. If values is
+                ndarray. shape == values.shape
+            pd.Series:
+                If isinstance(value, pd.Series)
+                Series same as values but quantized to centers. If values is
+                pd.Series. index == values.index
     """
+    nanmask = np.isnan(values)
     centers = get_quantize_centers(values, centers)
     midpoints = (centers[1:] + centers[:-1]) * 0.5
     idx = np.digitize(values, midpoints)
-    return centers[idx]
+    quant = centers[idx]
+    if np.any(nanmask):
+        try:
+            quant[nanmask] = np.nan
+        except ValueError:
+            quant = quant.astype(float)
+            quant[nanmask] = np.nan
+
+    if isinstance(values, pd.Series):
+        return pd.Series(quant, index=values.index)
+    else:
+        return quant
 
 
 def quantize_hist(values, centers=None):
@@ -70,6 +90,44 @@ class QuantizeTest(unittest.TestCase):
         values = np.array([-10, -4, 1, 1, 1, 20, 5, 5.9, 7, 7, 16, 17])
         actual = quantize_hist(values, quantize)
         expected = pd.Series([2, 5, 5], index=[-5, 2, 10])
+        pd.testing.assert_series_equal(actual, expected)
+
+    @staticmethod
+    def test_quantize_nulls():
+        """test"""
+        values = np.array([2, 2, np.nan, 5, 2, np.nan, 4])
+        actual = quantize_values(values, [1, 6])
+        expected = np.array([1, 1, np.nan, 6, 1, np.nan, 6])
+        np.testing.assert_array_equal(actual, expected)
+
+    @staticmethod
+    def test_quantize_nulls_3d():
+        """test"""
+        values = np.array(
+            [
+                [2, 2, np.nan, 5, 2, np.nan, 4],
+                [2, 2, np.nan, 5, 2, np.nan, 4],
+                [np.nan, 2, np.nan, 5, 2, np.nan, 4],
+            ]
+        )
+        actual = quantize_values(values, [1, 6])
+        expected = np.array(
+            [
+                [1, 1, np.nan, 6, 1, np.nan, 6],
+                [1, 1, np.nan, 6, 1, np.nan, 6],
+                [np.nan, 1, np.nan, 6, 1, np.nan, 6],
+            ]
+        )
+        np.testing.assert_array_equal(actual, expected)
+
+    @staticmethod
+    def test_quantize_series():
+        """test"""
+        values = pd.Series([2, 2, np.nan, 5, 2, np.nan, 4])
+        index = np.arange(len(values))[::-1]
+        values.index = index
+        actual = quantize_values(values, [1, 6])
+        expected = pd.Series([1, 1, np.nan, 6, 1, np.nan, 6], index=index)
         pd.testing.assert_series_equal(actual, expected)
 
 

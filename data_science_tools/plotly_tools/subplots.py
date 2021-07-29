@@ -91,27 +91,27 @@ class FigureSubplot(go.Figure):
 
     @property
     def figure(self):
-        """Pass through for the figure of the subplot. """
+        """Pass through for the figure of the subplot."""
         return self._figure
 
     @property
     def subplot_ref(self):
-        """Pass through for the figure of the subplot. """
+        """Pass through for the figure of the subplot."""
         return self._subplot_ref
 
     @property
     def row(self):
-        """Subplot row number. Figure has defined properties. """
+        """Subplot row number. Figure has defined properties."""
         return self._row
 
     @property
     def col(self):
-        """Subplot column number. Figure has defined properties. """
+        """Subplot column number. Figure has defined properties."""
         return self._col
 
     @property
     def secondary_y(self):
-        """Subplot secondary_y. Figure has defined properties. """
+        """Subplot secondary_y. Figure has defined properties."""
         return self._secondary_y
 
     def update_layout(
@@ -172,7 +172,7 @@ class FigureSubplot(go.Figure):
 
     @staticmethod
     def _get_new_signature(function: Callable, **defaults) -> inspect.Signature:
-        """Get new defaults for function given the """
+        """Get new defaults for function given the"""
         sig = inspect.signature(function)
         parameters = []
         for param in sig.parameters.values():
@@ -182,7 +182,7 @@ class FigureSubplot(go.Figure):
         return sig.replace(parameters=parameters)
 
     def _subplot_method_names(self, keywords: KeysView[str]):
-        """Iterate all methods which have subplot_keywords. """
+        """Iterate all methods which have subplot_keywords."""
         keywords_set = set(keywords)
         for method_name in dir(self):
             if method_name.startswith("_"):

@@ -14,7 +14,7 @@
     <ns0:g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
         <ns0:text x="31.5" y="15" fill="#010101" fill-opacity=".3">coverage</ns0:text>
         <ns0:text x="31.5" y="14">coverage</ns0:text>
-        <ns0:text x="80" y="15" fill="#010101" fill-opacity=".3">72%</ns0:text>
-        <ns0:text x="78" y="14">72%</ns0:text>
+        <ns0:text x="80" y="15" fill="#010101" fill-opacity=".3">75%</ns0:text>
+        <ns0:text x="78" y="14">75%</ns0:text>
     </ns0:g>
 </ns0:svg>

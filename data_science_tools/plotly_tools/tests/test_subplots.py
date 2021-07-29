@@ -1,5 +1,5 @@
-# pylint: disable=missing-function-docstring,missing-class-docstring,no-self-use
-# pylint: disable=reimported
+# pylint: disable=missing-module-docstring,missing-function-docstring
+# pylint: disable=reimported,missing-class-docstring,no-self-use
 
 # standard
 import unittest
