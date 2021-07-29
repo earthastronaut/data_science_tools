@@ -1,0 +1,14 @@
+# ############################################################################ #
+# Dependencies
+# ############################################################################ #
+
+-e .[matplotlib,plotly]
+
+# for visualization
+matplotlib
+plotly
+kaleido
+
+# for interactive development
+ipython
+ipdb

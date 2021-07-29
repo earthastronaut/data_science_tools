@@ -4,12 +4,17 @@ version: "3.8"
 services:
     notebook:
         image: jupyter/base-notebook:latest
-        command: jupyter lab --NotebookApp.token=''
+        command: |
+            bash -c "
+                pip install -r /requirements.txt &&
+                jupyter lab --NotebookApp.token=''
+            "
         ports:
             # - host:container
             - ${NOTEBOOK_PORT:-8888}:8888
         working_dir: /workdir
         volumes:
             - ../:/workdir
+            - ./requirements.txt:/requirements.txt
         environment:
             PYTHONPATH: /workdir

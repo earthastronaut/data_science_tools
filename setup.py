@@ -30,11 +30,17 @@ setup(
     install_requires=[
         # For data manipulation.
         "pandas >= 0.23.4",
-        # For data visualization.
-        "matplotlib >= 3.2.1",
-        "seaborn>=0.10.1",
-        "plotly>=4.10.0",
     ],
+    extras_require={
+        "matplotlib": [
+            "matplotlib >= 3.2.1",
+            "seaborn>=0.10.1",
+        ],
+        "plotly": [
+            "plotly>=4.10.0",
+            # kaleido==0.1.0,
+        ],
+    },
     classifiers=[
         "Intended Audience :: Data Science",
         "License :: OSI Approved :: MIT License",
