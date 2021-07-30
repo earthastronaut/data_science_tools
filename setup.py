@@ -1,5 +1,6 @@
 """ For installing package. See LICENSE
 """
+import subprocess
 from setuptools import setup, find_packages
 
 
@@ -11,8 +12,15 @@ def load_description():
 
 def load_version():
     """Return the version number"""
-    with open("data_science_tools/__version__") as buffer:
-        return buffer.readline().strip()
+    version = subprocess.check_output("git describe --tags".split()).decode().strip()
+
+    version_filepath = "data_science_tools/__version__"
+    with open(version_filepath) as buffer:
+        lines = buffer.readlines()
+    lines[0] = f"{version}\n"
+    with open(version_filepath, "w") as buffer:
+        buffer.writelines(lines)
+    return version
 
 
 setup(
