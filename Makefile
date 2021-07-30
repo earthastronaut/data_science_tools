@@ -47,6 +47,9 @@ lint:
 type-check:
 	source activate.sh && mypy.sh data_science_tools
 
+## Check all
+check: test lint type-check
+
 ## Display version
 version:
 	@echo ${VERSION}
@@ -58,11 +61,11 @@ version:
 # Show this message
 help:
 	@echo ""
-	@echo "Usage: make <target>\n"
-	@echo "Targets:\n"
+	@echo "Usage: make <target>"
+	@echo "Targets:"
 	@grep -E "^[a-z,A-Z,0-9,-]+:.*" Makefile | sort | cut -d : -f 1 | xargs printf '  %s\n'
 	@echo ""
 
 .DEFAULT_GOAL=help
-.PHONY: build ci-cd clean help lint-bandit lint-black lint-flake8 lint-pylint lint requirements test type-check
-# .PHONY: grep -E "^[a-z,A-Z,0-9,-]+:.*" Makefile | sort | cut -d : -f 1 | xargs 
+.PHONY: build check clean help lint test-dev test type-check version
+# echo .PHONY: $(grep -E "^[a-z,A-Z,0-9,-]+:.*" Makefile | sort | cut -d : -f 1 | xargs)

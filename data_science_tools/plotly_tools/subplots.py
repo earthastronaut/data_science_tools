@@ -15,7 +15,6 @@ from collections.abc import Callable
 import plotly
 import plotly.graph_objects as go
 import numpy as np
-import numpy.typing  # pylint: disable=import-error,no-name-in-module
 
 # internal
 from .types import TFigure
@@ -260,7 +259,7 @@ def _get_row_cols(
 
 def _convert_figure_to_subplots(
     figure: go.Figure,
-) -> numpy.typing.NDArray[FigureSubplot]:
+) -> np.ndarray:
     """Take the figure grid ref and convert to array"""
     grid_ref = figure._grid_ref  # pylint: disable=protected-access
     row_subplots = []
@@ -333,7 +332,7 @@ def make_subplots(
     y_title: str = None,
     figure: go.Figure = None,
     **kws,
-) -> numpy.typing.NDArray[FigureSubplot]:
+) -> np.ndarray:
     """Make subplots with FigureSubplot objects
 
     Returns:

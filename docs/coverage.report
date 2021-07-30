@@ -1,13 +1,13 @@
 Name                                                Stmts   Miss Branch BrPart  Cover
 -------------------------------------------------------------------------------------
-data_science_tools/__init__.py                         19     10      6      1    40%
+data_science_tools/__init__.py                         20     10      6      1    42%
 data_science_tools/dataframe.py                       147     36     64      7    75%
 data_science_tools/graph.py                            37      1     16      2    94%
 data_science_tools/matplotlib_tools/__init__.py        15      3      2      1    76%
 data_science_tools/matplotlib_tools/formatters.py      31     24     12      0    16%
 data_science_tools/matplotlib_tools/visualize.py       87     22     36      8    67%
 data_science_tools/plotly_tools/__init__.py            10      2      0      0    80%
-data_science_tools/plotly_tools/subplots.py           189     32     80     19    80%
+data_science_tools/plotly_tools/subplots.py           188     32     80     19    79%
 data_science_tools/plotly_tools/types.py                9      1      0      0    89%
 data_science_tools/quantize.py                         62      2      8      2    94%
 data_science_tools/statistics.py                       38      6     18      5    80%

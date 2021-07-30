@@ -3,6 +3,8 @@
 # flake8: noqa: F403,F401
 # pylint: disable=import-outside-toplevel,global-statement
 
+from typing import List
+
 
 def get_version() -> str:
     """Get version number"""
@@ -20,7 +22,7 @@ __version__ = get_version()
 __all__ = ["__version__"]
 
 
-def import_tools(names=None) -> None:
+def import_tools(names: List[str] = None) -> None:
     """Load tools into the main namespace
 
     Purpose
