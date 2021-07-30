@@ -5,7 +5,7 @@
 SHELL=/bin/bash
 # PROJECT_VERSION:=$(shell head -n 1 data_science_tools/__version__)
 # LAST_VERSION_TAG:=$(shell git describe --tags $(shell git rev-list --tags --max-count=1) | grep -oEi '[0-9\.]+')
-GIT_TAG=$(shell git describe --tags)
+VERSION=$(shell git describe --tags)
 GIT_STATUS_SUMMARY=$(shell git status --porcelain)
 
 #################################################################################
@@ -16,6 +16,7 @@ GIT_STATUS_SUMMARY=$(shell git status --porcelain)
 build:
 	@echo "Check that directory is clean. Please commit all changes."
 	[ "${GIT_STATUS_SUMMARY}" = "" ]  # [ "$$(git status --porcelain)" = "" ]
+	@echo ${VERSION} > data_science_tools/__version__
 	source activate.sh && python setup.py sdist bdist_wheel
 
 ## Clean up python files and build artifacts
@@ -48,7 +49,7 @@ type-check:
 
 ## Display version
 version:
-	@echo ${GIT_TAG}
+	@echo ${VERSION}
 
 #################################################################################
 # Self Documenting Commands
