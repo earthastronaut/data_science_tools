@@ -1,5 +1,6 @@
 # project
 .venv
+data_science_tools/__version__
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -8,8 +8,12 @@ def get_version() -> str:
     """Get version number"""
     import os  # pylint: disable=redefined-outer-name
 
-    with open(os.path.join(os.path.dirname(__file__), "__version__")) as buffer:
-        return buffer.readline().strip()
+    filepath = os.path.join(os.path.dirname(__file__), "__version__")
+    if os.path.exists(filepath):
+        with open() as buffer:
+            return buffer.readline().strip()
+    else:
+        return "dev"
 
 
 __version__ = get_version()
