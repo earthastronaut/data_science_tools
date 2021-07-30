@@ -3,9 +3,9 @@
 #################################################################################
 
 SHELL=/bin/bash
-PROJECT_VERSION:=$(shell head -n 1 data_science_tools/__version__)
+# PROJECT_VERSION:=$(shell head -n 1 data_science_tools/__version__)
 # LAST_VERSION_TAG:=$(shell git describe --tags $(shell git rev-list --tags --max-count=1) | grep -oEi '[0-9\.]+')
-GIT_TAG=$(shell git describe --abbrev=0 --tags)
+VERSION=$(shell git describe --tags)
 GIT_STATUS_SUMMARY=$(shell git status --porcelain)
 
 #################################################################################
@@ -16,10 +16,8 @@ GIT_STATUS_SUMMARY=$(shell git status --porcelain)
 build:
 	@echo "Check that directory is clean. Please commit all changes."
 	[ "${GIT_STATUS_SUMMARY}" = "" ]  # [ "$$(git status --porcelain)" = "" ]
-	@echo 'Check that tag is current. Run `make git-tag` to add tag.'
-	[ "${GIT_TAG}" = "${PROJECT_VERSION}" ]  # [ "$$(git describe --abbrev=0 --tags)" = "$$(make version)" ]
+	@echo ${VERSION} > data_science_tools/__version__
 	source activate.sh && python setup.py sdist bdist_wheel
-
 
 ## Clean up python files and build artifacts
 clean:
@@ -51,11 +49,7 @@ type-check:
 
 ## Display version
 version:
-	@echo ${PROJECT_VERSION}
-
-## Create git tag with latest project version
-version-tag:
-	git tag $(PROJECT_VERSION)
+	@echo ${VERSION}
 
 #################################################################################
 # Self Documenting Commands
