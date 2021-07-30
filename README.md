@@ -1,6 +1,6 @@
 # Data Science Tools
 
-![](https://github.com/earthastronaut/data_science_tools/workflows/Project%20Tests/badge.svg)
+[![](https://github.com/earthastronaut/data_science_tools/workflows/Project%20Tests/badge.svg)](https://github.com/earthastronaut/data_science_tools/actions)
 [![](docs/badges/coverage.svg)](/docs/coverage.report)
 ![](docs/badges/mypy.svg)
 
