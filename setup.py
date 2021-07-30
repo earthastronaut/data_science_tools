@@ -15,11 +15,8 @@ def load_version():
     version = subprocess.check_output("git describe --tags".split()).decode().strip()
 
     version_filepath = "data_science_tools/__version__"
-    with open(version_filepath) as buffer:
-        lines = buffer.readlines()
-    lines[0] = f"{version}\n"
     with open(version_filepath, "w") as buffer:
-        buffer.writelines(lines)
+        buffer.write(f"{version}\n")
     return version
 
 
