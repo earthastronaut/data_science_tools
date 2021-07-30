@@ -1,5 +1,6 @@
 """ For installing package. See LICENSE
 """
+import os
 from setuptools import setup, find_packages
 
 
@@ -11,8 +12,12 @@ def load_description():
 
 def load_version():
     """Return the version number"""
-    with open("data_science_tools/__version__") as buffer:
-        return buffer.readline().strip()
+    filepath = "data_science_tools/__version__"
+    if os.path.exists(filepath):
+        with open(filepath) as buffer:
+            return buffer.readline().strip()
+    else:
+        return "dev"
 
 
 setup(
