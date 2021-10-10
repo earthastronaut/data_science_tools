@@ -46,52 +46,29 @@ class FigureSubplot(go.Figure):
         secondary_y: bool = False,
     ):
         if isinstance(figure, dict):
-            fig = plotly.subplots.make_subplots(**figure)
+            figure = plotly.subplots.make_subplots(**figure)
         elif figure is None:
-            specs = _get_specs_updated(
-                row,
-                col,
-                secondary_y=secondary_y,
-            )
-            fig = plotly.subplots.make_subplots(rows=row, cols=col, specs=specs)
-        elif isinstance(figure, go.Figure):
-            fig = figure
-        else:
-            raise TypeError(f"Invalid figure type {type(figure)}")
+            figure = plotly.subplots.make_subplots(rows=row, cols=col)
 
         super().__init__()
-        for key, obj in fig.__dict__.items():
+        for key, obj in figure.__dict__.items():
             if not callable(obj):
                 self.__dict__[key] = obj
 
-        self._figure = fig
         self._row = row
         self._col = col
         self._secondary_y = secondary_y
-        self._array_index = (row - 1, col - 1, 1 if secondary_y else 0)
-        i, j, k = self._array_index
-        self._subplot_ref = fig._grid_ref[i][j][k]
+        secondary = 1 if secondary_y else 0
+        self._subplot_ref = figure._grid_ref[row - 1][col - 1][secondary]
 
-        defaults = dict(
-            row=self.row,
-            col=self.col,
-            secondary_y=self.secondary_y,
-            rows=(self.row,),
-            cols=(self.col,),
-            secondary_ys=(self.secondary_y,),
-        )
-        for method_name in self._subplot_method_names(defaults.keys()):
-            self._wrapped_figure_method(method_name, **defaults)
-
-        self._subplot_layout_keywords_rename = {
-            "xaxis": next(self.select_xaxes()).plotly_name,  # e.g. xaxis3
-            "yaxis": next(self.select_yaxes()).plotly_name,  # e.g. yaxis6
-        }
+        self._init_wrap_figure_methods(("row", "col"))
+        self._init_wrap_figure_methods(("row", "col", "secondary_y"))
+        self._init_wrap_figure_methods(("rows", "cols"))
 
     @property
     def figure(self):
         """Pass through for the figure of the subplot."""
-        return self._figure
+        return self
 
     @property
     def subplot_ref(self):
@@ -113,76 +90,22 @@ class FigureSubplot(go.Figure):
         """Subplot secondary_y. Figure has defined properties."""
         return self._secondary_y
 
-    def update_layout(
-        self, dict1: Dict[str, Any] = None, overwrite: bool = False, **kwargs
-    ):
-        """
-        Update the properties of the figure's layout with a dict and/or with
-        keyword arguments.
+    rows = row
+    cols = col
+    # secondary_ys = secondary_y # not treated the same as the other two
 
-        This recursively updates the structure of the original
-        layout with the values in the input dict / keyword arguments.
+    def _init_wrap_figure_methods(self, keywords):
+        """Meant to be run once to wrape functions for these keywords"""
+        for method_name in self._subplot_method_names(keywords):
+            setattr(
+                self,
+                method_name,
+                self._wrapped_figure_method(getattr(self, method_name), keywords),
+            )
 
-        Parameters
-        ----------
-        dict1 : dict
-            Dictionary of properties to be updated
-        overwrite: bool
-            If True, overwrite existing properties. If False, apply updates
-            to existing properties recursively, preserving existing
-            properties that are not specified in the update operation.
-        kwargs :
-            Keyword/value pair of properties to be updated
-
-        Returns
-        -------
-        FigureSubplot
-            The Figure object that the update_layout method was called on
-        """
-        kws = dict1 or {}
-        kws.update(kwargs)
-
-        rename = self._subplot_layout_keywords_rename
-
-        title_kws = dict()
-        for key in tuple(kws):
-            if key.startswith("title"):
-                value = kws.pop(key)
-                if isinstance(value, dict):
-                    title_kws.update(value)
-                elif isinstance(value, str):
-                    title_kws["text"] = value
-                else:
-                    title_kws[key] = value
-
-            key_base = key.split("_")[0]
-            key_rename_with = rename.get(key_base)
-            if key_rename_with is not None:
-                key_rename = key.replace(key_base, key_rename_with)
-                kws[key_rename] = kws.pop(key)
-                logger.debug(f"rename: {key} to {key_rename}")
-
-        super().update_layout(kws, overwrite=overwrite)
-
-        if len(title_kws):
-            _add_subplot_title(self._figure, row=self.row, col=self.col, **title_kws)
-
-        return self
-
-    @staticmethod
-    def _get_new_signature(function: Callable, **defaults) -> inspect.Signature:
-        """Get new defaults for function given the"""
-        sig = inspect.signature(function)
-        parameters = []
-        for param in sig.parameters.values():
-            if param.name in defaults:
-                param = param.replace(default=defaults[param.name])
-            parameters.append(param)
-        return sig.replace(parameters=parameters)
-
-    def _subplot_method_names(self, keywords: KeysView[str]):
+    def _subplot_method_names(self, keywords):
         """Iterate all methods which have subplot_keywords."""
-        keywords_set = set(keywords)
+        keywords = set(keywords)
         for method_name in dir(self):
             if method_name.startswith("_"):
                 continue
@@ -201,37 +124,23 @@ class FigureSubplot(go.Figure):
                 sig = inspect.signature(method)
             except ValueError:
                 continue
-
-            method_keywords = set(sig.parameters.keys())
-            if not len(method_keywords):
-                continue
-
-            if not method_keywords.isdisjoint(keywords_set):
+            method_keywords = sig.parameters.keys()
+            if set(method_keywords).issuperset(keywords):
                 yield method_name
 
-    def _wrapped_figure_method(self, method_name: str, **defaults):
+    def _wrapped_figure_method(self, method, keywords):
         """Take the method from the self.figure and overwrite keywords
         with attributes from this object.
         """
-        method = getattr(self, method_name)
-        signature = self._get_new_signature(method, **defaults)
-
-        kwargs = {
-            key: value for key, value in defaults.items() if key in signature.parameters
-        }
 
         @functools.wraps(method)
-        def wrapper(*args, **kws):
-            """wrapper"""
-            kwargs.update(kws)
-            return method(*args, **kwargs)
+        def wrapped(*args, **kws):
+            for key in keywords:
+                kws.setdefault(key, getattr(self, key))
+            return method(*args, **kws)
 
-        wrapper.__doc__ = f"Subplot Wrapped: row={self.row} col={self.col} secondary_y={self.secondary_y}\n"  # noqa
-        if method.__doc__:
-            wrapper.__doc__ += method.__doc__
-        setattr(wrapper, "__signature__", signature)
-        setattr(wrapper, "_is_wrapped_figure_method", True)
-        setattr(self, method_name, wrapper)
+        setattr(wrapped, "_is_wrapped_figure_method", True)
+        return wrapped
 
 
 def _get_row_cols(
