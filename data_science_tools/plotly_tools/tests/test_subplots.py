@@ -61,18 +61,18 @@ class TestSubplots(unittest.TestCase):
         self.assertEqual(layout["yaxis4"], expected)
 
     def test_make_subplots_shapes(self):
-        axes = subplots.make_subplots(2, 2)
+        axes = subplots.create_subplots(2, 2)
         self.assertIsInstance(axes, np.ndarray)
         self.assertEqual(axes.ndim, 3)
         self.assertEqual(axes.shape, (2, 2, 1))
         self.assertIsInstance(axes[0, 0, 0], subplots.FigureSubplot)
 
-        axes = subplots.make_subplots(2, 2, secondary_y=True)
+        axes = subplots.create_subplots(2, 2, secondary_y=True)
         self.assertIsInstance(axes, np.ndarray)
         self.assertEqual(axes.ndim, 3)
         self.assertEqual(axes.shape, (2, 2, 2))
 
-        axes = subplots.make_subplots(rows=2, subplot_count=8, secondary_y=True)
+        axes = subplots.create_subplots(rows=2, subplot_count=8, secondary_y=True)
         self.assertIsInstance(axes, np.ndarray)
         self.assertEqual(axes.ndim, 3)
         self.assertEqual(axes.shape, (2, 4, 2))

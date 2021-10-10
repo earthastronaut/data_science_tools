@@ -8,8 +8,7 @@ Made this semi-private because there is plotly.subplots
 import functools
 import inspect
 import logging
-from typing import Any, Union, Tuple, List, Dict, KeysView
-from collections.abc import Callable
+from typing import Union, Tuple, List, Dict
 
 # external
 import plotly
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "FigureSubplot",
-    "make_subplots",
+    "create_subplots",
 ]
 
 BaseTypes = Union[str, bool, float, int]
@@ -217,7 +216,7 @@ def _get_specs_updated(
     return specs_updated
 
 
-def make_subplots(
+def create_subplots(
     rows: int = None,
     cols: int = None,
     subplot_count: int = None,
@@ -298,4 +297,4 @@ def make_subplots(
     return subplots
 
 
-make_subplots.__doc__ += plotly.subplots.make_subplots.__doc__
+create_subplots.__doc__ += plotly.subplots.make_subplots.__doc__
