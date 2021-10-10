@@ -17,7 +17,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 # internal
-from .types import TFigure
+from ._types import TFigure
 
 logger = logging.getLogger(__name__)
 

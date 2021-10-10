@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 
 # relative
-from .. import subplots
+from .. import _subplots as subplots
 
 
 class TestSubplots(unittest.TestCase):
