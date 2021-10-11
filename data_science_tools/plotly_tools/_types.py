@@ -2,7 +2,7 @@
 """
 # pylint: disable=missing-function-docstring
 from abc import ABCMeta, abstractmethod
-from typing import Union
+from typing import Union, List
 
 from plotly.subplots import SubplotXY, SubplotDomain
 
@@ -18,6 +18,8 @@ class TScene(metaclass=ABCMeta):
 
 class TFigure(metaclass=ABCMeta):
     """Type for plotly.graph_objects.Figure"""
+
+    _grid_ref: List
 
     @abstractmethod
     def get_subplot(

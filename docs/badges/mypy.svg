@@ -20,7 +20,7 @@
   <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11" id="g27">
     <text x="19" y="15" fill="#010101" fill-opacity=".3" id="text19">mypy</text>
     <text x="19" y="14" id="text21">mypy</text>
-    <text x="100" y="15" fill="#fe7d37" fill-opacity=".3" id="text23">41% imprecise</text>
-    <text x="100" y="14" id="text25">41% imprecise</text>
+    <text x="100" y="15" fill="#fe7d37" fill-opacity=".3" id="text23">44% imprecise</text>
+    <text x="100" y="14" id="text25">44% imprecise</text>
   </g>
 </svg>
