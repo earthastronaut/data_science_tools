@@ -14,6 +14,7 @@ import pandas as pd
 # relative
 from .._plotters import (
     plot_scatter_filled,
+    plot_dataframe,
 )
 
 
@@ -107,3 +108,104 @@ class TestPlotScatterFilled(unittest.TestCase):
         actual = traces[2]
         np.testing.assert_array_equal(actual.x, df["x"].values)
         np.testing.assert_array_equal(actual.y, df["below"].values)
+
+
+class TestDataFramePlotter(unittest.TestCase):
+    def test_plot_dataframe(self):
+        df = pd.DataFrame(
+            {
+                "c1": np.arange(10),
+                "c2": np.ones(10),
+            }
+        )
+        fig = plot_dataframe(df)
+        self.assertEqual(len(fig.data), 2)
+
+        actual = [obj.name for obj in fig.data]
+        expected = list(df)
+        self.assertEqual(actual, expected)
+
+    def test_plot_dataframe_select(self):
+        df = pd.DataFrame(
+            {
+                "c1": np.arange(10),
+                "c2": np.ones(10),
+                "c3": np.zeros(10),
+            }
+        )
+        traces = plot_dataframe(df, x=np.arange(10, 20), y=["c1", "c3"], figure=False)
+        self.assertEqual(len(traces), 2)
+
+        actual = [obj.name for obj in traces]
+        expected = ["c1", "c3"]
+        self.assertEqual(actual, expected)
+
+    def test_plot_dataframe_parameters(self):
+        df = pd.DataFrame(
+            {
+                "c1": np.arange(10),
+                "c2": np.ones(10),
+            }
+        )
+        traces = plot_dataframe(
+            df,
+            opacity=0.5,
+            df_kws=dict(
+                c1={
+                    "line_color": "red",
+                },
+                c2={
+                    "go_class": "Bar",
+                    "marker": {
+                        "color": "blue",
+                    },
+                },
+            ),
+            figure=False,
+        )
+        c1, c2 = traces
+        self.assertEqual(c1.opacity, 0.5)
+        self.assertEqual(c2.opacity, 0.5)
+
+        self.assertEqual(c1.name, "c1")
+        self.assertEqual(c2.name, "c2")
+
+        self.assertEqual(c1.type, "scatter")
+        self.assertEqual(c2.type, "bar")
+
+        self.assertEqual(c1.line.color, "red")
+        self.assertEqual(c2.marker.color, "blue")
+
+    def test_plot_dataframe_parameters_df_kws(self):
+        df = pd.DataFrame(
+            {
+                "c1": np.arange(10),
+                "c2": np.ones(10),
+            }
+        )
+
+        traces = plot_dataframe(
+            df,
+            opacity=0.5,
+            df_kws=pd.DataFrame(
+                {
+                    "line_color": ["red", None],
+                    "go_class": [None, "Bar"],
+                    "marker_color": [None, "blue"],
+                },
+                index=["c1", "c2"],
+            ),
+            figure=False,
+        )
+        c1, c2 = traces
+        self.assertEqual(c1.opacity, 0.5)
+        self.assertEqual(c2.opacity, 0.5)
+
+        self.assertEqual(c1.name, "c1")
+        self.assertEqual(c2.name, "c2")
+
+        self.assertEqual(c1.type, "scatter")
+        self.assertEqual(c2.type, "bar")
+
+        self.assertEqual(c1.line.color, "red")
+        self.assertEqual(c2.marker.color, "blue")

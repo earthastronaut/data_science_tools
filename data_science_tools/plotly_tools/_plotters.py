@@ -9,6 +9,12 @@ import plotly.graph_objects as go
 # internal
 from ._colors import format_color
 
+__all__ = [
+    "figure_with_traces",
+    "plot_scatter_filled",
+    "plot_dataframe",
+]
+
 
 def figure_with_traces(traces, figure=True):
     """Create or use figure and add traces/shapes
@@ -205,3 +211,125 @@ def plot_scatter_filled(  # pylint: disable=too-many-locals
         )
 
     return figure_with_traces(traces, figure=figure)
+
+
+def _get_x_from_dataframe(df, x=None):
+    # add x
+    if x is None:
+        return df.index
+    elif isinstance(x, (list, tuple, np.ndarray, pd.Series)):
+        return x
+    else:
+        return df[x]
+
+
+def _get_y_from_dataframe(df, y=None):
+    # add y
+    if y is None:
+        y_names = df.columns
+    elif isinstance(y, list):
+        y_names = y
+    else:
+        try:
+            if y in df:
+                y_names = [y]
+        except TypeError:
+            return {"": y}
+    y_data = {}
+    for name in y_names:
+        y_data[name] = df[name]
+    return y_data
+
+
+def _get_kws_from_dataframe(y_names, **kws):
+    # pd.DataFrame:
+    #   index: y column names
+    #   columns: kws
+    input_df_kws = kws.pop("df_kws", None)
+    if input_df_kws is None:
+        df_kws = pd.DataFrame(index=y_names)
+    elif isinstance(input_df_kws, pd.DataFrame):
+        df_kws = input_df_kws.reindex(index=y_names)
+    elif isinstance(input_df_kws, dict):
+        df_kws = pd.DataFrame(index=y_names)
+        for name, val in input_df_kws.items():
+            if isinstance(val, dict):
+                (value_flat,) = pd.json_normalize(val, sep="_").to_dict(
+                    orient="records"
+                )
+                for column, value in value_flat.items():
+                    df_kws.loc[name, column] = value
+            else:
+                TypeError(f"{name} {type(val)}")
+    else:
+        raise TypeError(str(type(input_df_kws)))
+
+    (kws_flattened,) = pd.json_normalize(kws, sep="_").to_dict(orient="records")
+    for key, value in kws_flattened.items():
+        if key in df_kws:
+            df_kws[key].fillna(value, inplace=True)
+        else:
+            df_kws[key] = value
+    return df_kws
+
+
+def _get_plot_obj(x_data, y_data, name, obj_class, **kwargs):
+    y_column = y_data[name]
+    obj_kws = dict(
+        x=x_data,
+        y=y_column,
+        name=name,
+    )
+    obj_kws.update(kwargs)
+
+    obj = obj_class(**obj_kws)
+    return obj
+
+
+def plot_dataframe(df, x=None, y=None, figure=True, go_class="Scatter", **kws):
+    """Plot dataframes
+
+    Parameters
+    ----------
+    df (pd.DataFrame): Base dataframe to build from
+    x (None or hashable or array):
+        None: uses df.index
+        hashable: uses df[x]
+        array: uses pd.Series(x, df.index)
+    y (None or List[hashable] or array):
+        None: uses df
+        List[hashable]: uses df[y]
+        array: uses pd.DataFrame(y, columns=[""])
+    figure (bool or go.Figure):
+        False: returns list of objects
+        True: add objs to new figure and returns figure
+        go.Figure: adds objs and returns figure
+    go_class (str): Default class to use getattr(plotly.graph_objects, type)
+    **kws: |
+        Defaults to use with go_class(**kws).
+        Special note: this can be customized per column uses. Example if
+        y = ["a", "b"] you could specify a custom kws
+        `line_color={"a": "red", "b": "blue"}` OR `line_color=["red", "blue"]`
+        to customize per. Can also just specify one for all: `line_color="red"`
+
+    Returns
+    -------
+    List[go.BaseTraceType]: Returns all the graph objects
+    or
+    go.Figure: If figure is True or go.Figure it'll return that figure with
+        the graph objects on it.
+    """
+    x_data = _get_x_from_dataframe(df, x=x)
+    y_data = _get_y_from_dataframe(df, y=y)
+    df_kws = _get_kws_from_dataframe(y_data.keys(), go_class=go_class, **kws)
+
+    objs = []
+    for column in y_data:
+        kwargs = df_kws.loc[column].dropna().to_dict()
+        obj_class_name = kwargs.pop("go_class")
+        obj_class = getattr(go, obj_class_name)
+        objs.append(
+            _get_plot_obj(x_data, y_data, column, obj_class=obj_class, **kwargs)
+        )
+
+    return figure_with_traces(objs, figure=figure)
