@@ -12,11 +12,11 @@ else:
     import plotly.graph_objects as go
     import plotly.express as px
 
-    from . import subplots
+    from . import _subplots
 
-    from .subplots import *
+    from ._subplots import *
 
-    __all__ += subplots.__all__ + [
+    __all__ += _subplots.__all__ + [
         "go",
         "px",
     ]

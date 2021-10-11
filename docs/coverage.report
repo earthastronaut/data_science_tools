@@ -7,11 +7,13 @@ data_science_tools/matplotlib_tools/__init__.py        15      3      2      1  
 data_science_tools/matplotlib_tools/formatters.py      31     24     12      0    16%
 data_science_tools/matplotlib_tools/visualize.py       87     22     36      8    67%
 data_science_tools/plotly_tools/__init__.py            10      2      0      0    80%
-data_science_tools/plotly_tools/subplots.py           188     32     80     19    79%
-data_science_tools/plotly_tools/types.py                9      1      0      0    89%
+data_science_tools/plotly_tools/_colors.py             85      9     44      9    86%
+data_science_tools/plotly_tools/_plotters.py          134     17     64     13    84%
+data_science_tools/plotly_tools/_subplots.py          137     13     58     13    87%
+data_science_tools/plotly_tools/_types.py               9      1      0      0    89%
 data_science_tools/quantize.py                         62      2      8      2    94%
 data_science_tools/statistics.py                       38      6     18      5    80%
 data_science_tools/utils.py                            30      1      0      0    97%
 data_science_tools/weighted.py                         35      9     12      6    68%
 -------------------------------------------------------------------------------------
-TOTAL                                                 709    149    254     51    75%
+TOTAL                                                 877    156    340     67    79%
