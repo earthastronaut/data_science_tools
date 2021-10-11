@@ -12,7 +12,7 @@ def get_version() -> str:
 
     filepath = os.path.join(os.path.dirname(__file__), "__version__")
     if os.path.exists(filepath):
-        with open(filepath) as buffer:
+        with open(filepath, encoding="utf-8") as buffer:
             return buffer.readline().strip()
     else:
         return "dev"
