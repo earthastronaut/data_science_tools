@@ -114,8 +114,8 @@ class TestDataFramePlotter(unittest.TestCase):
     def test_plot_dataframe(self):
         df = pd.DataFrame(
             {
-                "c1": np.arange(10),
-                "c2": np.ones(10),
+                "col1": np.arange(10),
+                "col2": np.ones(10),
             }
         )
         fig = plot_dataframe(df)
@@ -128,33 +128,33 @@ class TestDataFramePlotter(unittest.TestCase):
     def test_plot_dataframe_select(self):
         df = pd.DataFrame(
             {
-                "c1": np.arange(10),
-                "c2": np.ones(10),
+                "col1": np.arange(10),
+                "col2": np.ones(10),
                 "c3": np.zeros(10),
             }
         )
-        traces = plot_dataframe(df, x=np.arange(10, 20), y=["c1", "c3"], figure=False)
+        traces = plot_dataframe(df, x=np.arange(10, 20), y=["col1", "c3"], figure=False)
         self.assertEqual(len(traces), 2)
 
         actual = [obj.name for obj in traces]
-        expected = ["c1", "c3"]
+        expected = ["col1", "c3"]
         self.assertEqual(actual, expected)
 
     def test_plot_dataframe_parameters(self):
         df = pd.DataFrame(
             {
-                "c1": np.arange(10),
-                "c2": np.ones(10),
+                "col1": np.arange(10),
+                "col2": np.ones(10),
             }
         )
         traces = plot_dataframe(
             df,
             opacity=0.5,
             df_kws=dict(
-                c1={
+                col1={
                     "line_color": "red",
                 },
-                c2={
+                col2={
                     "go_class": "Bar",
                     "marker": {
                         "color": "blue",
@@ -163,24 +163,24 @@ class TestDataFramePlotter(unittest.TestCase):
             ),
             figure=False,
         )
-        c1, c2 = traces
-        self.assertEqual(c1.opacity, 0.5)
-        self.assertEqual(c2.opacity, 0.5)
+        col1, col2 = traces
+        self.assertEqual(col1.opacity, 0.5)
+        self.assertEqual(col2.opacity, 0.5)
 
-        self.assertEqual(c1.name, "c1")
-        self.assertEqual(c2.name, "c2")
+        self.assertEqual(col1.name, "col1")
+        self.assertEqual(col2.name, "col2")
 
-        self.assertEqual(c1.type, "scatter")
-        self.assertEqual(c2.type, "bar")
+        self.assertEqual(col1.type, "scatter")
+        self.assertEqual(col2.type, "bar")
 
-        self.assertEqual(c1.line.color, "red")
-        self.assertEqual(c2.marker.color, "blue")
+        self.assertEqual(col1.line.color, "red")
+        self.assertEqual(col2.marker.color, "blue")
 
     def test_plot_dataframe_parameters_df_kws(self):
         df = pd.DataFrame(
             {
-                "c1": np.arange(10),
-                "c2": np.ones(10),
+                "col1": np.arange(10),
+                "col2": np.ones(10),
             }
         )
 
@@ -193,19 +193,19 @@ class TestDataFramePlotter(unittest.TestCase):
                     "go_class": [None, "Bar"],
                     "marker_color": [None, "blue"],
                 },
-                index=["c1", "c2"],
+                index=["col1", "col2"],
             ),
             figure=False,
         )
-        c1, c2 = traces
-        self.assertEqual(c1.opacity, 0.5)
-        self.assertEqual(c2.opacity, 0.5)
+        col1, col2 = traces
+        self.assertEqual(col1.opacity, 0.5)
+        self.assertEqual(col2.opacity, 0.5)
 
-        self.assertEqual(c1.name, "c1")
-        self.assertEqual(c2.name, "c2")
+        self.assertEqual(col1.name, "col1")
+        self.assertEqual(col2.name, "col2")
 
-        self.assertEqual(c1.type, "scatter")
-        self.assertEqual(c2.type, "bar")
+        self.assertEqual(col1.type, "scatter")
+        self.assertEqual(col2.type, "bar")
 
-        self.assertEqual(c1.line.color, "red")
-        self.assertEqual(c2.marker.color, "blue")
+        self.assertEqual(col1.line.color, "red")
+        self.assertEqual(col2.marker.color, "blue")
