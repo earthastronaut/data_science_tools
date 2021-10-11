@@ -74,7 +74,7 @@ if PY3:
         interactive_only_warning()
         globals_ = globals_ or globals()
         locals_ = locals_ or locals()
-        with open(filepath, "r") as fptr:
+        with open(filepath, "r", encoding="utf-8") as fptr:
             # import runpy
             # result = runpy.run_path(f,globals,locals)
             # globals.update(result) ??
